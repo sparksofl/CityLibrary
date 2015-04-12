@@ -160,7 +160,7 @@
                         </Grid>
                         
                         <Grid Row="1" Column="0">
-                            <!--<ListBox
+                            <ListBox
                                 x:Name="ListboxCheckout"
                                 ItemsSource="{Binding}"
                                 Height="Auto"
@@ -168,8 +168,8 @@
                                 Background="GhostWhite"
                                 BorderThickness="1"
                                 BorderBrush="LightGray">
-                            </ListBox>-->
-                            <StackPanel>
+                            </ListBox>
+                            <!--<StackPanel>
                                 <TextBlock 
                                 Margin="10, 5, 10, 0"
                                 FontSize="11"
@@ -230,7 +230,7 @@
                                 Foreground="Gray"
                                 TextTrimming="CharacterEllipsis" 
                                 Text="10.08.15"/>
-                            </StackPanel>
+                            </StackPanel>-->
                         </Grid>
                         <Grid Row="1" Column="1">
                             <StackPanel>
