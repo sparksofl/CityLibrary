@@ -24,5 +24,19 @@ namespace CourseWork
         {
             InitializeComponent();
         }
+
+        private void DoQuery(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void MenuClick(object sender, RoutedEventArgs e)
+        {
+            switch (index)
+            {
+                case (0):
+
+            }
+        }
     }
 }
