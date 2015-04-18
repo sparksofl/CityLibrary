@@ -76,7 +76,9 @@ namespace CourseWork.Styles.CustomizedWindow
 
         void CloseButtonClick(object sender, RoutedEventArgs e)
         {
-            sender.ForWindowFromTemplate(w => w.Close());
+            var app = Application.Current;
+            app.Shutdown();
+            //sender.ForWindowFromTemplate(w => w.Close());
         }
 
         void MinButtonClick(object sender, RoutedEventArgs e)

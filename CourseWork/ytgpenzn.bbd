@@ -58,7 +58,6 @@ namespace CourseWork
             catch (Exception ex)
             {
                 ErrorLabel.Content = ex.Message;
-                ErrorLabel.ToolTip = ex.Message;
             }
         }
 

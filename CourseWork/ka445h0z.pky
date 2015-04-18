@@ -43,7 +43,7 @@ namespace CourseWork
                 //command.ExecuteNonQuery();
 
                 SqlDataAdapter adapter = new SqlDataAdapter(command);
-                DataTable dataTable = new DataTable("CityLibrary");
+                DataTable dataTable = new DataTable("Requested table");
 
                 // dunno for what it
                 adapter.Fill(dataTable);
@@ -58,7 +58,6 @@ namespace CourseWork
             catch (Exception ex)
             {
                 ErrorLabel.Content = ex.Message;
-                ErrorLabel.ToolTip = ex.Message;
             }
         }
 

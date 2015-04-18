@@ -7,25 +7,43 @@ using System.Threading.Tasks;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Windows;
+using System.Windows.Input;
 
 namespace CourseWork
 {
-    class Connection
+    internal static class Connection
     {
-        private string connectionStr = @"Provider=SQLNCLI11.1;Integrated Security=SSPI;Persist Security Info=False;";
+        public static bool IsOpened;
+        public static bool FirstLoading = true;
 
-        void OpenConnection()
+        private static string _connectionString =
+            @"Integrated Security=SSPI;Persist Security Info=False;User ID=Maria;Initial Catalog=CityLibrary;Data Source=MYPC";
+        public static SqlConnection SqlConnection { get; private set; }
+
+        public static SqlConnection CreateConnection()
         {
-            var connection = new SqlConnection();
+            if (FirstLoading)
+                Mouse.OverrideCursor = Cursors.Wait;
+
+            SqlConnection = new SqlConnection();
 
             try
             {
-                connection.Open();
+                SqlConnection.ConnectionString = _connectionString;
+                SqlConnection.Open();
+                IsOpened = true;
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("Ошибка в соединении с базой данных");
+                System.Windows.Forms.MessageBox.Show("Произошла следующая ошибка: " + ex.Message, "Ошибка",
+                    System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
+
+
+            Mouse.OverrideCursor = Cursors.Arrow;
+            FirstLoading = false;
+
+            return SqlConnection;
         }
     }
 }
