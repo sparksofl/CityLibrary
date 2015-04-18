@@ -10,11 +10,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
+using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Control = System.Windows.Controls.Control;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace CourseWork
 {
@@ -26,12 +29,29 @@ namespace CourseWork
         public MainWindow()
         {
             InitializeComponent();
+            FillGivenBooks();
+        }
+
+        public static void FillGivenBooks()
+        {
+            var givenBooks = new List<LastBook>
+            {
+                new LastBook() {Title = "a", Date = "12.29"},
+                new LastBook() {Title = "n", Date = "12.29"},
+                new LastBook() {Title = "WEFDS", Date = "12.29"},
+                new LastBook() {Title = "DSVFC", Date = "12.29"},
+                new LastBook() {Title = "fg", Date = "12.29"},
+                new LastBook() {Title = "dfgdfv", Date = "12.29"}
+            };
         }
 
         private void DoQuery(object sender, RoutedEventArgs e)
         {
             try
             {
+                ErrorTextBlock.Text = "";
+                ErrorTextBlock.ToolTip = "";
+
                 // creating connection
                 SqlConnection connection = Connection.CreateConnection();
 
@@ -57,8 +77,8 @@ namespace CourseWork
 
             catch (Exception ex)
             {
-                ErrorLabel.Content = ex.Message;
-                ErrorLabel.ToolTip = ex.Message;
+                ErrorTextBlock.Text = ex.Message;
+                ErrorTextBlock.ToolTip = ex.Message;
             }
         }
 
@@ -66,32 +86,43 @@ namespace CourseWork
         {
             var menuItem = sender as MenuItem;
             if (menuItem == null) return;
-            switch (menuItem.Name)
+
+            try
             {
-                case ("MLastActions"):
-                    TLastActions.IsSelected = true;
-                    break;
-                case ("MGiveBook"):
-                    TGiveBook.IsSelected = true;
-                    break;
-                case ("MTakeBackBook"):
-                    TTakeBackBook.IsSelected = true;
-                    break;
-                case ("MEditing"):
-                    TEditing.IsSelected = true;
-                    break;
-                case ("MQuery"):
-                    TQuery.IsSelected = true;
-                    break;
-                case ("MStatistic"):
-                    TStatistic.IsSelected = true;
-                    break;
-                case ("MReports"):
-                    TReports.IsSelected = true;
-                    break;
-                case ("Exit"):
-                    (new ExitWindow()).ShowDialog();
-                    break;
+                var currentItem = new TabItem();
+
+                switch (menuItem.Name)
+                {
+                    case ("MLastActions"):
+                        currentItem = TLastActions;
+                        break;
+                    case ("MGiveBook"):
+                        currentItem = TGiveBook;
+                        break;
+                    case ("MTakeBackBook"):
+                        currentItem = TTakeBackBook;
+                        break;
+                    case ("MEditing"):
+                        currentItem = TEditing;
+                        break;
+                    case ("MQuery"):
+                        currentItem = TQuery;
+                        break;
+                    case ("MStatistic"):
+                        currentItem = TStatistic;
+                        break;
+                    case ("MReports"):
+                        currentItem = TLastActions;
+                        break;
+                    case ("Exit"):
+                        (new ExitWindow()).ShowDialog();
+                        break;
+                }
+                currentItem.IsSelected = true;
+                CurrentMenu.Text = currentItem.Header.ToString();
+            }
+            catch
+            {
             }
         }
 
@@ -102,6 +133,12 @@ namespace CourseWork
 
             cancelEventArgs.Cancel = true;
             (new ExitWindow()).ShowDialog();
+        }
+
+        private void ErrorTextBlock_KeyDown(object sender, KeyEventArgs e)
+        {
+            Control TB = sender as Control;
+            //if ((this.OnPreviewStylusSystemGest) == Keys.Control)
         }
     }
 }
