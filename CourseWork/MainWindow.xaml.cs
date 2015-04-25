@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using MenuItem = System.Windows.Controls.MenuItem;
 using System.Collections.ObjectModel;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace CourseWork
 {
@@ -28,6 +29,18 @@ namespace CourseWork
             { "Авторства", "Creative"},
             { "Произведения", "Opuses"},
             { "Издательства", "Publishers"}
+        };
+
+        static Dictionary<string, string> Ids = new Dictionary<string, string>()
+        {
+            { "Authors", "AID"},
+            { "Books", "Code"},
+            { "Checkout", "ChID"},
+            { "Clients", "CardNumber"},
+            { "Content", "ContID"},
+            { "Creative", "CrID"},
+            { "Opuses", "OID"},
+            { "Publishers", "PName"}
         };
 
         public static List<string> ComboBoxList = new List<string>();
@@ -78,24 +91,31 @@ namespace CourseWork
 
         private void FillDataGrid(string query, DataGrid dataGrid)
         {
-            // creating connection
-            SqlConnection connection = Connection.CreateConnection();
+            try
+            {
+                //creating connection
+                SqlConnection connection = Connection.CreateConnection();
 
-            // creating command to perform
-            SqlCommand command = new SqlCommand(query, connection);
-            //command.ExecuteNonQuery();
+                // creating command to perform
+                SqlCommand command = new SqlCommand(query, connection);
+                //command.ExecuteNonQuery();
 
-            SqlDataAdapter adapter = new SqlDataAdapter(command);
-            DataTable dataTable = new DataTable("CityLibrary");
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                DataTable dataTable = new DataTable("CityLibrary");
 
-            // dunno for what it
-            adapter.Fill(dataTable);
-            dataGrid.ItemsSource = dataTable.DefaultView;
-            adapter.Update(dataTable);
+                // dunno for what it
+                adapter.Fill(dataTable);
+                dataGrid.ItemsSource = dataTable.DefaultView;
+                adapter.Update(dataTable);
 
-            // it's necessary to always do it after proccessing DB.
-            connection.Close();
-            Connection.IsOpened = false;
+                // it's necessary to always do it after proccessing DB.
+                connection.Close();
+                Connection.IsOpened = false;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         private void MenuClick(object sender, RoutedEventArgs e)
@@ -198,5 +218,49 @@ namespace CourseWork
             if (Tables.Keys.Contains(ComboBoxTables.SelectedValue.ToString()))
                 FillDataGrid("SELECT * FROM " + Tables[ComboBoxTables.SelectedValue.ToString()], EditDataGrid);
         }
+
+        private static string query;
+
+
+        private void EditDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+        }
+
+        private void EditDataGrid_CurrentCellChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                var dgDataGrid = sender as DataGrid;
+
+                int indexOfSelectedColumn = dgDataGrid.CurrentColumn.DisplayIndex;
+
+                string propertyName = this.EditDataGrid.CurrentColumn.Header.ToString();
+
+                var tableName = Tables[ComboBoxTables.SelectedValue.ToString()];
+                string value = "";
+
+                var idValue = "";
+
+
+                foreach (DataGridCellInfo di in dgDataGrid.SelectedCells)
+                {
+                    DataRowView dvr = (DataRowView) di.Item;
+                    idValue = dvr[0].ToString();
+                    value = dvr[indexOfSelectedColumn].ToString();
+                }
+                if (value.Equals("")) return;
+                {
+                    query = "UPDATE " + tableName + " SET " + propertyName + "='" + value + "' WHERE " +
+                            Ids[tableName] + "='" + idValue + "'";
+                    Command.ExecuteCommand(query);
+                }
+            }
+
+            catch (Exception exc)
+            {
+                //MessageBox.Show(exc.Message);
+            }
+        }
+
     }
 }

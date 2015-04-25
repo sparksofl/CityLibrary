@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Forms;
 
 namespace CourseWork
 {
@@ -47,6 +48,27 @@ namespace CourseWork
             Connection.SqlConnection.Close();
 
             return items;
+        }
+
+        public static bool ExecuteCommand(string query)
+        {
+            if (query == null) return false;
+
+            try
+            {
+                Connection.CreateConnection();
+
+                var c = CreateCommand(query);
+                c.ExecuteNonQuery();
+
+                Connection.SqlConnection.Close();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return false;
+            }
+            return true;
         }
     }
 }

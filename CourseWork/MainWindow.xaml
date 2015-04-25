@@ -428,23 +428,7 @@
                                 Name="EditDataGrid"
                                 ItemsSource="{Binding EGrid}"
                                 AutoGenerateColumns="True"
-                                AutoGeneratingColumn="EditDataGrid_OnAutoGeneratingColumn">
-                            <!--<DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding AName}" Header="Имя"/>
-                                <DataGridTextColumn Binding="{Binding BirthDate}" Header="Дата рождения"/>
-                            </DataGrid.Columns>-->
-                            <DataGrid.RowHeaderTemplate>
-                                <DataTemplate>
-                                    <ListBox>
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <CheckBox Content="Filter 1"/>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
-                                </DataTemplate>
-                            </DataGrid.RowHeaderTemplate>
-                        </DataGrid>
+                                AutoGeneratingColumn="EditDataGrid_OnAutoGeneratingColumn" CellEditEnding="EditDataGrid_CellEditEnding" CurrentCellChanged="EditDataGrid_CurrentCellChanged" />
                         </Grid>
                     </Grid>
                 </TabItem>
