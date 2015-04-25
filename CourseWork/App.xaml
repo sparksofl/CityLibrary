@@ -7,6 +7,12 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/CustomizedWindow/VS2012WindowStyle.xaml" />
                 <ResourceDictionary Source="Styles/CustomizedWindow/DataGridStyles.xaml" />
+                <ResourceDictionary Source="Styles/CustomizedWindow/ComboBoxStyles.xaml" />
+                <ResourceDictionary Source="Styles/CustomizedWindow/MenuStyles.xaml" />
+                <ResourceDictionary Source="Styles/CustomizedWindow/ScrollBarStyles.xaml" />
+                <ResourceDictionary Source="Styles/CustomizedWindow/TextBoxStyles.xaml" />
+                <ResourceDictionary Source="Styles/CustomizedWindow/ButtonStyles.xaml" />
+                <ResourceDictionary Source="Styles/CustomizedWindow/GroupBoxStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

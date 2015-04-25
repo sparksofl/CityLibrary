@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,8 +27,16 @@ namespace CourseWork
 
         private void YesButton_Click(object sender, RoutedEventArgs e)
         {
-            var app = Application.Current;
-            app.Shutdown(); 
+            try
+            {
+                if (Connection.SqlConnection != null && Connection.SqlConnection.State == ConnectionState.Open)
+                    Connection.SqlConnection.Close();
+                var app = Application.Current;
+                app.Shutdown();
+            }
+            catch
+            {
+            }
         }
 
         private void NoButton_Click(object sender, RoutedEventArgs e)

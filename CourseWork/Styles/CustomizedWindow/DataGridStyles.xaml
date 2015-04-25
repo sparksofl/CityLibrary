@@ -5,7 +5,7 @@
     </ResourceDictionary.MergedDictionaries>
     <Style x:Key="StandardDataGrid" TargetType="DataGrid">
         <Setter Property="SelectionUnit" Value="Cell"/>
-        <Setter Property="GridLinesVisibility" Value="None"/>
+        <Setter Property="GridLinesVisibility" Value="Vertical"/>
         <Setter Property="HeadersVisibility" Value="Column"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="Background" Value="{StaticResource LightBackground}"/>
@@ -38,7 +38,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <Border x:Name="BackgroundBorder" Grid.ColumnSpan="2" Background="{StaticResource BackgroundSelected}"/>
-                                    <TextBlock Foreground="{StaticResource Foreground}" FontSize="14" FontWeight="SemiBold">
+                                    <TextBlock Foreground="White" FontSize="13" FontWeight="Normal">
                                         <ContentPresenter Margin="6,3,6,3" VerticalAlignment="Center"/>
                                     </TextBlock>
                                     <Path x:Name="SortArrow" Visibility="Collapsed" Data="M0,0 L1,0 0.5,1 z" Stretch="Fill" 

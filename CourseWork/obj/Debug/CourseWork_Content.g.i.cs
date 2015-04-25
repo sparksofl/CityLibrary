@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icons/2menu.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icons/embed_close-128.png")]
 
 

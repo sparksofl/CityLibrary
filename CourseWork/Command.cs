@@ -5,18 +5,48 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace CourseWork
 {
-    internal class Command
+    internal static class Command
     {
-        public SqlCommand command;
-        public Command(string query)
+        public static SqlCommand CreateCommand(string query)
         {
-            if (Connection.FirstLoading)
-                Connection.CreateConnection();
-            command = Connection.SqlConnection.CreateCommand();
+            Connection.CreateConnection();
+
+            var command = Connection.SqlConnection.CreateCommand();
             command.CommandText = query;
+
+            //Connection.SqlConnection.Close();
+
+            return command;
+        }
+
+        public static List<object> ReadData(string query)
+        {
+            Connection.CreateConnection();
+
+            var items = new List<object>();
+            var c = CreateCommand(query);
+            var reader = c.ExecuteReader();
+
+            do
+            {
+                while (reader.Read())
+                {
+                    items.Add(reader["name"].ToString());
+                    /*items.Add(reader.GetValue(2).ToString());
+                items.Add(reader.GetValue(3).ToString());
+                items.Add(reader.GetValue(4).ToString());
+                items.Add(reader.GetValue(5).ToString());*/
+                }
+            } while (reader.NextResult());
+
+            Connection.SqlConnection.Close();
+
+            return items;
         }
     }
 }
