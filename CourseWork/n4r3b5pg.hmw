@@ -17,7 +17,6 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using CourseWork.Styles.CustomizedWindow;
-using CheckBox = System.Windows.Controls.CheckBox;
 using DataGrid = System.Windows.Controls.DataGrid;
 using DataGridCell = System.Windows.Controls.DataGridCell;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -54,30 +53,16 @@ namespace CourseWork
         };
 
         public static List<string> ComboBoxList = new List<string>();
-        public static List<string> LastGivenBooks = new List<string>();
-        public static List<string> BName = new List<string>();
-        public  static  List<string> ComboBoxFiltersList = new List<string>(); 
-        public  static  List<string> AuthorsFiltersList = new List<string>(); 
-        public  static  List<string> OpusesFiltersList = new List<string>(); 
+        public static List<string> LastGivenBooks =Command.ReadData("SELECT BName, GiveDate FROM Books b INNER JOIN Chechouts c ON b.Code=c.Code", "");//;// new List<string>();
 
         public MainWindow()
         {
             InitializeComponent();
             ComboBoxList.AddRange(Tables.Keys);
             ComboBoxTables.ItemsSource = ComboBoxList;
-            ComboBoxTables.SelectedIndex = 1;
-            ListBoxLastGiven.ItemsSource = LastGivenBooks; 
-            
-            ComboBoxFiltersList =
-                 Command.ReadData("SELECT DISTINCT Year, PName FROM Books B, Publishers P WHERE B.PublID=P.PublID",
-                     "Year");
-            ComboBoxFiltersList.AddRange(Command.ReadData("SELECT DISTINCT Year, PName FROM Books B, Publishers P WHERE B.PublID=P.PublID",
-                     "PName"));
-            ComboBoxFilters.ItemsSource = ComboBoxFiltersList;
-            AuthorsFiltersList = Command.ReadData("SELECT DISTINCT Nationality FROM Authors",
-                     "Nationality");
-            OpusesFiltersList = Command.ReadData("SELECT DISTINCT Genre FROM Opuses",
-                        "Genre");
+            ComboBoxTables.SelectedIndex = 0;
+            //LastGivenBooks =
+                
         }
 
         private void DoQuery(object sender, RoutedEventArgs e)
@@ -243,39 +228,14 @@ namespace CourseWork
 
         private void ComboBoxTables_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            string tableName = ComboBoxTables.SelectedValue.ToString();
-            LabelFilter.Foreground = Brushes.DarkSlateGray;
-            ComboBoxFilters.IsEnabled = true;
             if (TextBoxSearch.Text != "Введите поисковый запрос...")
                 TextBoxSearch.Text = "";
             if (Tables.Keys.Contains(ComboBoxTables.SelectedValue.ToString()))
                 FillDataGrid("SELECT * FROM " + Tables[ComboBoxTables.SelectedValue.ToString()], EditDataGrid);
-            if (tableName == "Авторы")
-            {
-                ComboBoxFilters.ItemsSource = AuthorsFiltersList;
-            }
-
-            if (tableName == "Произведения")
-            {
-                ComboBoxFilters.ItemsSource = OpusesFiltersList;
-            } 
-            
-            if (tableName == "Книги")
-            {
-                ComboBoxFilters.ItemsSource = ComboBoxFiltersList;
-            }
-
-            else if (tableName != "Авторы" && tableName != "Произведения" && tableName != "Книги")
-            {
-                LabelFilter.Foreground = Brushes.LightGray;
-                ComboBoxFilters.IsEnabled = false;
-                ComboBoxFilters.ItemsSource = new List<string>();
-            }
         }
 
         private void EditDataGrid_CurrentCellChanged(object sender, EventArgs e)
         {
-            TextBlockResult.Text = "";
             try
             {
                 var dgDataGrid = sender as DataGrid;
@@ -300,17 +260,7 @@ namespace CourseWork
                 {
                     var query = "UPDATE " + tableName + " SET " + propertyName + "='" + value + "' WHERE " +
                             Ids[tableName] + "='" + idValue + "'";
-                    if (!Command.ExecuteCommand(query) && !dgDataGrid.SelectedCells.ToString().Contains(value))
-                    {
-                        MessageBox.Show("Поля с таким значением не существует. Данные не будут сохранены.", "Ошибка",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-                    }
-                    else
-                    {
-                        Command.ExecuteCommand(query);
-                        TextBlockResult.Text = "Изменения сохранены";
-                    }
+                    Command.ExecuteCommand(query);
                 }
             }
 
@@ -320,20 +270,8 @@ namespace CourseWork
             }
         }
 
-        public DataGridCell GetDataGridCell(DataGridCellInfo cellInfo)
-        {
-            var cellContent = cellInfo.Column.GetCellContent(cellInfo.Item);
-            if (cellContent != null)
-                return (DataGridCell)cellContent.Parent;
-
-            return null;
-        }
-
         private void ButtonSearch_OnClick(object sender, RoutedEventArgs e)
         {
-
-            if (ComboBoxFilters.SelectedValue != null)
-                ComboBoxFilters.SelectedValue = "";
             if (ComboBoxTables.SelectedIndex < 0)
             {
                 ComboBoxTables.Background = Brushes.Crimson;
@@ -401,7 +339,6 @@ namespace CourseWork
 
         private void Delete_OnClick(object sender, RoutedEventArgs e)
         {
-            TextBlockResult.Text = "";
             DataGrid dgDataGrid = this.EditDataGrid;
             string idValue = "";
             foreach (DataGridCellInfo di in dgDataGrid.SelectedCells)
@@ -411,42 +348,8 @@ namespace CourseWork
             }
             
             var tableName = Tables[ComboBoxTables.SelectedValue.ToString()];
-
-            // books refrs publ
-            //var q = "ALTER TABLE Books ADD CONSTRAINT fk_employee FOREIGN KEY (PName) REFERENCES Publishers (PName) ON DELETE CASCADE;";
-            //Command.ExecuteCommand(q);
-
-            var query = "DELETE FROM " + tableName + " WHERE " + Ids[tableName] + "=" + idValue;
+            var query = "DELETE FROM " + tableName + " WHERE " + Ids[tableName] + "=" + "?";
             Command.ExecuteCommand(query);
-            FillDataGrid("SELECT * FROM " + tableName, EditDataGrid);
-            TextBlockResult.Text = "Строка удалена.";
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            /*LastGivenBooks =
-                Command.ReadData("SELECT BName, GiveDate FROM Books b INNER JOIN Checkout c ON b.Code=c.Code", "BName");
-            ComboBoxFiltersList =
-                Command.ReadData("SELECT DISTINCT Year, PName FROM Books B, Publishers P WHERE B.PublID=P.PublID",
-                    "Year");*/
-        }
-
-        private void ComboBoxFilters_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (ComboBoxFilters.SelectedValue == null) return;
-            string searchCriteria = ComboBoxFilters.SelectedValue.ToString();
-            string tableName = Tables[ComboBoxTables.SelectedValue.ToString()];
-            string getNames = "SELECT COLUMN_NAME from CityLibrary.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" + tableName + "'";
-            List<string> properties = Command.ReadData(getNames, "COLUMN_NAME");
-
-            var query = "SELECT * FROM " + Tables[ComboBoxTables.SelectedValue.ToString()] + " WHERE " + properties[0] + " LIKE '%" + searchCriteria + "%'";
-            for (var j = 1; j < properties.Count; j++)
-                query += " UNION " + "SELECT * FROM " + tableName + " WHERE " + properties[j] + " LIKE '%" + searchCriteria + "%'";
-            if (ComboBoxTables.SelectedValue.ToString() == "Книги")
-            {
-                query += " UNION " + "SELECT Code, BName, Year, Pages, Info, P.PublID FROM Books b INNER JOIN Publishers p ON b.PublID=p.PublID WHERE PName LIKE '%" + searchCriteria + "%'";
-            }
-            FillDataGrid(query, EditDataGrid);
         }
     }
 }

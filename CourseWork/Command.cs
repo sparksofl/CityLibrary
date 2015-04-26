@@ -32,18 +32,21 @@ namespace CourseWork
             var items = new List<string>();
             var c = CreateCommand(query);
             var reader = c.ExecuteReader();
-
             do
             {
+
                 while (reader.Read())
                 {
+
                     items.Add(reader[s].ToString());
-                    /*items.Add(reader.GetValue(2).ToString());
+                }
+                /*items.Add(reader.GetValue(2).ToString());
                 items.Add(reader.GetValue(3).ToString());
                 items.Add(reader.GetValue(4).ToString());
                 items.Add(reader.GetValue(5).ToString());*/
-                }
             } while (reader.NextResult());
+            //if (!reader.Read())
+            //reader = c.ExecuteReader();
 
             Connection.SqlConnection.Close();
 
@@ -65,7 +68,7 @@ namespace CourseWork
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                //MessageBox.Show("Неверные данные.\n\nПодробности: \n" + e.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             return true;

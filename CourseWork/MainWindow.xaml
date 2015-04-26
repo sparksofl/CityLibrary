@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="600" MinHeight="450" MinWidth="500"
         WindowStartupLocation="CenterScreen"
-        Style="{StaticResource VS2012WindowStyle}" Closing="Window_Closing" d:DataContext="{d:DesignData Source=MainWindowViewModel.cs}" MouseDown="Window_MouseDown">
+        Style="{StaticResource VS2012WindowStyle}" Closing="Window_Closing" d:DataContext="{d:DesignData Source=MainWindowViewModel.cs}" MouseDown="Window_MouseDown" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -165,7 +165,7 @@
                         
                         <Grid Row="1" Column="0">
                             <ListBox
-                                Name="LastGivenBooks"
+                                Name="ListBoxLastGiven"
                                 ItemsSource="{Binding LastGivenBooks}"
                                 Height="Auto"
                                 Margin="10, -10, 10, 10"
@@ -383,14 +383,26 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         
-                        <Grid Column="0" Row="0" Margin="5">
+                        <Grid Column="0" Row="0">
+                            <Label Content="Таблица"
+                                   Foreground="DarkSlateGray"/>
+                        </Grid>
+                        <Grid Column="1" Row="0">
+                            <Label Content="Фильтры"
+                                   Name="LabelFilter"
+                                   Foreground="DarkSlateGray"/>
+                        </Grid>
+                        
+                        <Grid Column="0" Row="1" Margin="5">
                             <ComboBox Name="ComboBoxTables"
                                       ItemsSource="{Binding Path=ComboBoxList}" 
                                       Style="{StaticResource StandardComboBox}" 
@@ -398,7 +410,14 @@
                                       />
                            
                         </Grid>
-                        <Grid Column="0" Row="1" Margin="5">
+                        <Grid Column="1" Row="1" Margin="5">
+                            <ComboBox
+                                Name="ComboBoxFilters"
+                                      ItemsSource="{Binding Path=ComboBoxFiltersList}" 
+                                      Style="{StaticResource StandardComboBox}" SelectionChanged="ComboBoxFilters_SelectionChanged">
+                            </ComboBox>
+                        </Grid>
+                        <Grid Column="0" Row="2" Margin="5">
                             <TextBox
                                 Text="Введите поисковый запрос..."
                                 Name="TextBoxSearch"
@@ -408,7 +427,7 @@
                                 Foreground="DimGray" d:DataContext="{d:DesignData }" GotFocus="TextBoxSearch_GotFocus" PreviewKeyDown="TextBoxSearch_PreviewKeyDown" />
                             </Grid>
                         
-                        <Grid Column="1" Row="1" Margin="5">
+                        <Grid Column="1" Row="2" Margin="5">
                             <Button MinWidth="25"
                                 Name="ButtonSearch"
                                 Click="ButtonSearch_OnClick"
@@ -423,7 +442,7 @@
                             </Button>
                         </Grid>
                         
-                        <Grid Column="0" Row="2" ColumnSpan="2" Margin="5, 15">
+                        <Grid Column="0" Row="3" ColumnSpan="2" Margin="5, 15">
                             <DataGrid
                                 Style="{StaticResource StandardDataGrid}"
                                 RowBackground="GhostWhite"
@@ -434,7 +453,24 @@
                                 Name="EditDataGrid"
                                 ItemsSource="{Binding EGrid}"
                                 AutoGenerateColumns="True"
-                                AutoGeneratingColumn="EditDataGrid_OnAutoGeneratingColumn" CellEditEnding="EditDataGrid_CellEditEnding" CurrentCellChanged="EditDataGrid_CurrentCellChanged" />
+                                AutoGeneratingColumn="EditDataGrid_OnAutoGeneratingColumn" 
+                                CurrentCellChanged="EditDataGrid_CurrentCellChanged" 
+                                IsSynchronizedWithCurrentItem="True" MouseRightButtonUp="EditDataGrid_MouseRightButtonUp" 
+                                >
+                                
+                                <DataGrid.ContextMenu>
+                                   <ContextMenu>
+                                        <MenuItem Name ="Delete" Header="Delete" Click="Delete_OnClick"/>
+                                    </ContextMenu>
+                               </DataGrid.ContextMenu>
+                                </DataGrid>
+                        </Grid>
+                        <Grid Column="0" ColumnSpan="2" Row="4">
+                            <TextBlock
+                                Name="TextBlockResult"
+                                Text=""
+                                Margin="5, -8, 5, -2"
+                                Foreground="LimeGreen"/>
                         </Grid>
                     </Grid>
                 </TabItem>

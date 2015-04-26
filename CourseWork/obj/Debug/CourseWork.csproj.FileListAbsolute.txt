@@ -31,3 +31,4 @@ D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\Enti
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\EntityFramework.xml
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\EntityFramework.SqlServer.dll
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\EntityFramework.SqlServer.xml
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\CourseWork.csprojResolveAssemblyReference.cache
