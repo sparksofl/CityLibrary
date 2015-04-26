@@ -25,11 +25,11 @@ namespace CourseWork
             return command;
         }
 
-        public static List<object> ReadData(string query)
+        public static List<string> ReadData(string query, string s)
         {
             Connection.CreateConnection();
 
-            var items = new List<object>();
+            var items = new List<string>();
             var c = CreateCommand(query);
             var reader = c.ExecuteReader();
 
@@ -37,7 +37,7 @@ namespace CourseWork
             {
                 while (reader.Read())
                 {
-                    items.Add(reader["name"].ToString());
+                    items.Add(reader[s].ToString());
                     /*items.Add(reader.GetValue(2).ToString());
                 items.Add(reader.GetValue(3).ToString());
                 items.Add(reader.GetValue(4).ToString());

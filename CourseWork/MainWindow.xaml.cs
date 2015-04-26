@@ -10,6 +10,12 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using MenuItem = System.Windows.Controls.MenuItem;
 using System.Collections.ObjectModel;
+using System.Net.Mime;
+using System.Windows.Controls.Primitives;
+using System.Windows.Forms;
+using System.Windows.Input;
+using System.Windows.Media;
+using DataGrid = System.Windows.Controls.DataGrid;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace CourseWork
@@ -215,12 +221,11 @@ namespace CourseWork
 
         private void ComboBoxTables_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
+            if (TextBoxSearch.Text != "Введите поисковый запрос...")
+                TextBoxSearch.Text = "";
             if (Tables.Keys.Contains(ComboBoxTables.SelectedValue.ToString()))
                 FillDataGrid("SELECT * FROM " + Tables[ComboBoxTables.SelectedValue.ToString()], EditDataGrid);
         }
-
-        private static string query;
-
 
         private void EditDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
@@ -250,7 +255,7 @@ namespace CourseWork
                 }
                 if (value.Equals("")) return;
                 {
-                    query = "UPDATE " + tableName + " SET " + propertyName + "='" + value + "' WHERE " +
+                    var query = "UPDATE " + tableName + " SET " + propertyName + "='" + value + "' WHERE " +
                             Ids[tableName] + "='" + idValue + "'";
                     Command.ExecuteCommand(query);
                 }
@@ -262,5 +267,62 @@ namespace CourseWork
             }
         }
 
+        private void ButtonSearch_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (ComboBoxTables.SelectedIndex < 0)
+            {
+                ComboBoxTables.Background = Brushes.Crimson;
+                return;
+            }
+
+            string searchCriteria = TextBoxSearch.Text;
+            string tableName = Tables[ComboBoxTables.SelectedValue.ToString()];
+
+            if (searchCriteria == "")
+            {
+                FillDataGrid("SELECT * FROM " + tableName, EditDataGrid);
+                TextBoxSearch.BorderBrush = Brushes.Crimson;
+                TextBoxSearch.Foreground = Brushes.Crimson;
+                return;
+            }
+
+            TextBoxSearch.BorderBrush = Brushes.DimGray;
+            TextBoxSearch.Foreground = Brushes.DimGray;
+            ComboBoxTables.BorderBrush = Brushes.LightGray;
+
+            string getNames = "SELECT COLUMN_NAME from CityLibrary.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" + tableName + "'";
+            List<string> properties = Command.ReadData(getNames, "COLUMN_NAME");
+
+            try
+            {
+                var query = "SELECT * FROM " + tableName + " WHERE " + properties[0] + " LIKE '%" + searchCriteria + "%'";
+                    for (var j = 1; j < properties.Count; j++)
+                        query += " UNION " + "SELECT * FROM " + tableName + " WHERE " + properties[j] + " LIKE '%" + searchCriteria + "%'";
+                FillDataGrid(query, EditDataGrid);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (TextBoxSearch.Text != "Введите поисковый запрос...")
+                TextBoxSearch.Text = "";
+            if (TextBoxSearch.Text == "")
+                TextBoxSearch.Text = "Введите поисковый запрос...";
+        }
+
+        private void TextBoxSearch_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBoxSearch.Text = "";
+        }
+
+        private void TextBoxSearch_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+                ButtonSearch_OnClick(sender, new RoutedEventArgs());
+        }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="600" MinHeight="450" MinWidth="500"
         WindowStartupLocation="CenterScreen"
-        Style="{StaticResource VS2012WindowStyle}" Closing="Window_Closing" d:DataContext="{d:DesignData Source=MainWindowViewModel.cs}">
+        Style="{StaticResource VS2012WindowStyle}" Closing="Window_Closing" d:DataContext="{d:DesignData Source=MainWindowViewModel.cs}" MouseDown="Window_MouseDown">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -391,21 +391,27 @@
                         </Grid.ColumnDefinitions>
                         
                         <Grid Column="0" Row="0" Margin="5">
-                            <ComboBox Name="ComboBoxTables" Text="Таблица" ItemsSource="{Binding Path=ComboBoxList}" Style="{StaticResource StandardComboBox}" SelectionChanged="ComboBoxTables_SelectionChanged"></ComboBox>
+                            <ComboBox Name="ComboBoxTables"
+                                      ItemsSource="{Binding Path=ComboBoxList}" 
+                                      Style="{StaticResource StandardComboBox}" 
+                                      SelectionChanged="ComboBoxTables_SelectionChanged"
+                                      />
                            
                         </Grid>
                         <Grid Column="0" Row="1" Margin="5">
                             <TextBox
-                                Text="{Binding SearchCriteria}" 
+                                Text="Введите поисковый запрос..."
+                                Name="TextBoxSearch"
                                 BorderThickness="0, 0, 0, 1"
                                 Background="GhostWhite"
                                 BorderBrush="DimGray"
-                                Foreground="DimGray" d:DataContext="{d:DesignData }" />
+                                Foreground="DimGray" d:DataContext="{d:DesignData }" GotFocus="TextBoxSearch_GotFocus" PreviewKeyDown="TextBoxSearch_PreviewKeyDown" />
                             </Grid>
                         
                         <Grid Column="1" Row="1" Margin="5">
-                            <Button 
-                                Command="{Binding Search}"
+                            <Button MinWidth="25"
+                                Name="ButtonSearch"
+                                Click="ButtonSearch_OnClick"
                                 Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                                 <StackPanel>
                                     <Image 
