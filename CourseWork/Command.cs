@@ -68,7 +68,7 @@ namespace CourseWork
             }
             catch (Exception e)
             {
-                //MessageBox.Show("Неверные данные.\n\nПодробности: \n" + e.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Неверные данные.\n\nПодробности: \n" + e.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             return true;

@@ -465,12 +465,30 @@
                                </DataGrid.ContextMenu>
                                 </DataGrid>
                         </Grid>
-                        <Grid Column="0" ColumnSpan="2" Row="4">
+                        <Grid Column="0" Row="4">
                             <TextBlock
                                 Name="TextBlockResult"
                                 Text=""
                                 Margin="5, -8, 5, -2"
                                 Foreground="LimeGreen"/>
+                        </Grid>
+                        <Grid Column="0" Row="4">
+                            <Button 
+                                MinWidth="40"
+                                Margin="0, 0, -130, 0"
+                                ToolTip="Добавить запись"
+                                HorizontalAlignment="Right"
+                                Name="ButtonAdd"
+                                Click="ButtonAdd_OnClick"
+                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                                <StackPanel>
+                                    <Image 
+                                        Source="Icons/add.png"
+                                        MaxWidth="30"
+                                        MaxHeight="40"
+                                        ></Image>
+                                </StackPanel>
+                            </Button>
                         </Grid>
                     </Grid>
                 </TabItem>

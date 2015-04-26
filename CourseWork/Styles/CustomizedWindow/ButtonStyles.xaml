@@ -5,9 +5,9 @@
     </ResourceDictionary.MergedDictionaries>
     <Style x:Key="StandardButton" TargetType="Button">
         <Setter Property="Visibility" Value="Visible"/>
-        <Setter Property="Foreground" Value="{StaticResource Foreground}"/>
-        <Setter Property="Background" Value="{StaticResource BackgroundNormal}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrushNormal}"/>
+        <Setter Property="Foreground" Value="{StaticResource LightBackground}"/>
+        <Setter Property="Background" Value="{StaticResource BorderBrushSelected}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BackgroundSelected}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">

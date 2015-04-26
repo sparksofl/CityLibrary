@@ -63,6 +63,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ActionCommand.cs" />
+    <Compile Include="AddClient.xaml.cs">
+      <DependentUpon>AddClient.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Command.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="ExitWindow.xaml.cs">
@@ -70,6 +73,10 @@
     </Compile>
     <Compile Include="LastBook.cs" />
     <Compile Include="Styles\CustomizedWindow\VS2012WindowStyle.cs" />
+    <Page Include="AddClient.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ExitWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -187,6 +194,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\Embed_Close-128.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\user.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\error.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -296,7 +296,10 @@ namespace CourseWork
                     idValue = dvr[0].ToString();
                     value = dvr[indexOfSelectedColumn].ToString();
                 }
-                if (value.Equals("")) return;
+
+                List<string> idValues = Command.ReadData("SELECT " + Ids[tableName] + " FROM " + tableName,
+                    Ids[tableName]);
+                if (value.Equals("") || !idValues.Contains(idValue)) return;
                 {
                     var query = "UPDATE " + tableName + " SET " + propertyName + "='" + value + "' WHERE " +
                             Ids[tableName] + "='" + idValue + "'";
@@ -306,10 +309,17 @@ namespace CourseWork
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     }
+
+                    if (!Command.ExecuteCommand(query))
+                    {
+                        TextBlockResult.Foreground = Brushes.Crimson;
+                        TextBlockResult.Text = "Неверные данные: изменения не будут сохранены.";
+                    }
                     else
                     {
                         Command.ExecuteCommand(query);
-                        TextBlockResult.Text = "Изменения сохранены";
+                        TextBlockResult.Foreground = Brushes.LimeGreen;
+                        TextBlockResult.Text = "Изменения сохранены.";
                     }
                 }
             }
@@ -331,7 +341,6 @@ namespace CourseWork
 
         private void ButtonSearch_OnClick(object sender, RoutedEventArgs e)
         {
-
             if (ComboBoxFilters.SelectedValue != null)
                 ComboBoxFilters.SelectedValue = "";
             if (ComboBoxTables.SelectedIndex < 0)
@@ -343,11 +352,12 @@ namespace CourseWork
             string searchCriteria = TextBoxSearch.Text;
             string tableName = Tables[ComboBoxTables.SelectedValue.ToString()];
 
-            if (searchCriteria == "")
+            if (searchCriteria == "" || searchCriteria == "Введите поисковый запрос...")
             {
                 FillDataGrid("SELECT * FROM " + tableName, EditDataGrid);
                 TextBoxSearch.BorderBrush = Brushes.Crimson;
                 TextBoxSearch.Foreground = Brushes.Crimson;
+                TextBoxSearch.Text = "";
                 return;
             }
 
@@ -424,11 +434,6 @@ namespace CourseWork
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            /*LastGivenBooks =
-                Command.ReadData("SELECT BName, GiveDate FROM Books b INNER JOIN Checkout c ON b.Code=c.Code", "BName");
-            ComboBoxFiltersList =
-                Command.ReadData("SELECT DISTINCT Year, PName FROM Books B, Publishers P WHERE B.PublID=P.PublID",
-                    "Year");*/
         }
 
         private void ComboBoxFilters_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -447,6 +452,13 @@ namespace CourseWork
                 query += " UNION " + "SELECT Code, BName, Year, Pages, Info, P.PublID FROM Books b INNER JOIN Publishers p ON b.PublID=p.PublID WHERE PName LIKE '%" + searchCriteria + "%'";
             }
             FillDataGrid(query, EditDataGrid);
+        }
+
+        private void ButtonAdd_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (ComboBoxTables.SelectedValue.ToString() == "Читатели")
+                new AddClient().ShowDialog();
+            FillDataGrid("SELECT * FROM " + Tables[ComboBoxTables.SelectedValue.ToString()], EditDataGrid);
         }
     }
 }
