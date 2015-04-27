@@ -74,10 +74,18 @@ namespace CourseWork.Styles.CustomizedWindow
             }
         }
 
-        void CloseButtonClick(object sender, RoutedEventArgs e)
+        private void CloseButtonClick(object sender, RoutedEventArgs e)
         {
-            var app = Application.Current;
-            app.Shutdown();
+            try
+            {
+                Window.GetWindow((DependencyObject) sender).Close();
+            }
+            catch
+            {
+            }
+
+            //var app = Application.Current;
+            //app.Shutdown();
             //sender.ForWindowFromTemplate(w => w.Close());
         }
 

@@ -31,6 +31,14 @@ D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\Enti
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\EntityFramework.xml
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\EntityFramework.SqlServer.dll
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\EntityFramework.SqlServer.xml
-D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\CourseWork.csprojResolveAssemblyReference.cache
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddClient.baml
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddClient.g.cs
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddAuthor.baml
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddAuthor.g.cs
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\CourseWork.csprojResolveAssemblyReference.cache
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddPublisher.baml
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddPublisher.g.cs
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddOpus.baml
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddOpus.g.cs
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddBook.baml
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddBook.g.cs

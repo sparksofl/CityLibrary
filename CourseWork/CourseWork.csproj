@@ -63,8 +63,20 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ActionCommand.cs" />
+    <Compile Include="AddAuthor.xaml.cs">
+      <DependentUpon>AddAuthor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddBook.xaml.cs">
+      <DependentUpon>AddBook.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddClient.xaml.cs">
       <DependentUpon>AddClient.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddOpus.xaml.cs">
+      <DependentUpon>AddOpus.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddPublisher.xaml.cs">
+      <DependentUpon>AddPublisher.xaml</DependentUpon>
     </Compile>
     <Compile Include="Command.cs" />
     <Compile Include="Connection.cs" />
@@ -73,7 +85,23 @@
     </Compile>
     <Compile Include="LastBook.cs" />
     <Compile Include="Styles\CustomizedWindow\VS2012WindowStyle.cs" />
+    <Page Include="AddAuthor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddBook.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AddClient.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddOpus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddPublisher.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -203,6 +231,35 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\author.png" />
+    <Resource Include="Icons\author2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\publ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\opus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\plus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\add2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\delete.png" />
+    <Resource Include="Icons\remove.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\confirm.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\book.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\addbook.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

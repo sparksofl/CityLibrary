@@ -21,6 +21,7 @@ using CheckBox = System.Windows.Controls.CheckBox;
 using DataGrid = System.Windows.Controls.DataGrid;
 using DataGridCell = System.Windows.Controls.DataGridCell;
 using MessageBox = System.Windows.Forms.MessageBox;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace CourseWork
 {
@@ -190,15 +191,6 @@ namespace CourseWork
             }
         }
 
-        private void Window_Closing(object sender, CancelEventArgs cancelEventArgs)
-        {
-            if (Connection.SqlConnection != null && Connection.SqlConnection.State == ConnectionState.Open)
-                Connection.SqlConnection.Close();
-
-            cancelEventArgs.Cancel = true;
-            (new ExitWindow()).ShowDialog();
-        }
-
         private void EditDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             var displayName = GetPropertyDisplayName(e.PropertyDescriptor);
@@ -301,15 +293,19 @@ namespace CourseWork
                     Ids[tableName]);
                 if (value.Equals("") || !idValues.Contains(idValue)) return;
                 {
-                    var query = "UPDATE " + tableName + " SET " + propertyName + "='" + value + "' WHERE " +
-                            Ids[tableName] + "='" + idValue + "'";
-                    if (!Command.ExecuteCommand(query) && !dgDataGrid.SelectedCells.ToString().Contains(value))
+                    var query = "";
+                    if (value == "")
+                        query = "UPDATE " + tableName + " SET " + propertyName + "=NULL WHERE " +
+                            Ids[tableName] + "='" + idValue + "'"; 
+                    query = "UPDATE " + tableName + " SET " + propertyName + "='" + value + "' WHERE " +
+                             Ids[tableName] + "='" + idValue + "'";
+                    /*if (!Command.ExecuteCommand(query) && !dgDataGrid.SelectedCells.ToString().Contains(value))
                     {
                         MessageBox.Show("Поля с таким значением не существует. Данные не будут сохранены.", "Ошибка",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
-                    }
-
+                    }*/
+                    
                     if (!Command.ExecuteCommand(query))
                     {
                         TextBlockResult.Foreground = Brushes.Crimson;
@@ -328,6 +324,12 @@ namespace CourseWork
             {
                 //MessageBox.Show(exc.Message);
             }
+        }
+
+        private void EditDataGrid_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            //if (e.Key == Key.Enter)
+              //  EditDataGrid_CurrentCellChanged(sender, e);
         }
 
         public DataGridCell GetDataGridCell(DataGridCellInfo cellInfo)
@@ -411,25 +413,30 @@ namespace CourseWork
 
         private void Delete_OnClick(object sender, RoutedEventArgs e)
         {
-            TextBlockResult.Text = "";
-            DataGrid dgDataGrid = this.EditDataGrid;
-            string idValue = "";
-            foreach (DataGridCellInfo di in dgDataGrid.SelectedCells)
+            DialogResult result = MessageBox.Show("Вы уверены, что хотите удалить данную запись?", "Подтверждение удaления",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (result == System.Windows.Forms.DialogResult.Yes)
             {
-                DataRowView dvr = (DataRowView)di.Item;
-                idValue = dvr[0].ToString();
+                TextBlockResult.Text = "";
+                DataGrid dgDataGrid = this.EditDataGrid;
+                string idValue = "";
+                foreach (DataGridCellInfo di in dgDataGrid.SelectedCells)
+                {
+                    DataRowView dvr = (DataRowView) di.Item;
+                    idValue = dvr[0].ToString();
+                }
+
+                var tableName = Tables[ComboBoxTables.SelectedValue.ToString()];
+
+                // books refrs publ
+                //var q = "ALTER TABLE Books ADD CONSTRAINT fk_employee FOREIGN KEY (PName) REFERENCES Publishers (PName) ON DELETE CASCADE;";
+                //Command.ExecuteCommand(q);
+
+                var query = "DELETE FROM " + tableName + " WHERE " + Ids[tableName] + "=" + idValue;
+                Command.ExecuteCommand(query);
+                FillDataGrid("SELECT * FROM " + tableName, EditDataGrid);
+                TextBlockResult.Text = "Строка удалена.";
             }
-            
-            var tableName = Tables[ComboBoxTables.SelectedValue.ToString()];
-
-            // books refrs publ
-            //var q = "ALTER TABLE Books ADD CONSTRAINT fk_employee FOREIGN KEY (PName) REFERENCES Publishers (PName) ON DELETE CASCADE;";
-            //Command.ExecuteCommand(q);
-
-            var query = "DELETE FROM " + tableName + " WHERE " + Ids[tableName] + "=" + idValue;
-            Command.ExecuteCommand(query);
-            FillDataGrid("SELECT * FROM " + tableName, EditDataGrid);
-            TextBlockResult.Text = "Строка удалена.";
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -449,16 +456,114 @@ namespace CourseWork
                 query += " UNION " + "SELECT * FROM " + tableName + " WHERE " + properties[j] + " LIKE '%" + searchCriteria + "%'";
             if (ComboBoxTables.SelectedValue.ToString() == "Книги")
             {
-                query += " UNION " + "SELECT Code, BName, Year, Pages, Info, P.PublID FROM Books b INNER JOIN Publishers p ON b.PublID=p.PublID WHERE PName LIKE '%" + searchCriteria + "%'";
+                query += " UNION " + "SELECT Code, BName, Year, Pages, Info, P.PublID, InnerID FROM Books b INNER JOIN Publishers p ON b.PublID=p.PublID WHERE PName LIKE '%" + searchCriteria + "%'";
             }
             FillDataGrid(query, EditDataGrid);
         }
 
         private void ButtonAdd_OnClick(object sender, RoutedEventArgs e)
         {
-            if (ComboBoxTables.SelectedValue.ToString() == "Читатели")
+            var tableName = ComboBoxTables.SelectedValue.ToString();
+            var selected = ComboBoxTables.SelectedValue.ToString();
+            if (selected == "Читатели")
                 new AddClient().ShowDialog();
+            if (selected == "Авторы")
+                new AddAuthor().ShowDialog();
+            if (selected == "Издательства")
+                new AddPublisher().ShowDialog();
+            if (selected == "Произведения")
+                new AddOpus().ShowDialog();
+            if (selected == "Книги")
+                new AddBook().ShowDialog();
             FillDataGrid("SELECT * FROM " + Tables[ComboBoxTables.SelectedValue.ToString()], EditDataGrid);
+            ComboBoxFiltersList =
+                 Command.ReadData("SELECT DISTINCT Year, PName FROM Books B, Publishers P WHERE B.PublID=P.PublID",
+                     "Year");
+            ComboBoxFiltersList.AddRange(Command.ReadData("SELECT DISTINCT Year, PName FROM Books B, Publishers P WHERE B.PublID=P.PublID",
+                     "PName"));
+            ComboBoxFilters.ItemsSource = ComboBoxFiltersList;
+            AuthorsFiltersList = Command.ReadData("SELECT DISTINCT Nationality FROM Authors",
+                     "Nationality");
+            OpusesFiltersList = Command.ReadData("SELECT DISTINCT Genre FROM Opuses",
+                        "Genre"); if (tableName == "Авторы")
+            {
+                ComboBoxFilters.ItemsSource = AuthorsFiltersList;
+            }
+
+            if (tableName == "Произведения")
+            {
+                ComboBoxFilters.ItemsSource = OpusesFiltersList;
+            }
+
+            if (tableName == "Книги")
+            {
+                ComboBoxFilters.ItemsSource = ComboBoxFiltersList;
+            }
+
+            else if (tableName != "Авторы" && tableName != "Произведения" && tableName != "Книги")
+            {
+                LabelFilter.Foreground = Brushes.LightGray;
+                ComboBoxFilters.IsEnabled = false;
+                ComboBoxFilters.ItemsSource = new List<string>();
+            }
+        }
+
+        private void EditDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            TextBlockResult.Text = "";
+            try
+            {
+
+                 var element = e.EditingElement as TextBox;
+                var value = element.Text;
+                var dgDataGrid = EditDataGrid;//sender as DataGrid;
+
+                int indexOfSelectedColumn = dgDataGrid.CurrentColumn.DisplayIndex;
+                string propertyName = e.Column.Header.ToString();
+
+                var tableName = Tables[ComboBoxTables.SelectedValue.ToString()];
+                string oldValue = "";
+
+                var idValue = "";
+
+
+                foreach (DataGridCellInfo di in dgDataGrid.SelectedCells)
+                {
+                    DataRowView dvr = (DataRowView)di.Item;
+                    idValue = dvr[0].ToString();
+                    oldValue = dvr[indexOfSelectedColumn].ToString();
+                }
+
+                List<string> idValues = Command.ReadData("SELECT " + Ids[tableName] + " FROM " + tableName,
+                    Ids[tableName]);
+                if (!idValues.Contains(idValue) && oldValue.ToString().Equals(value.ToString())) return;
+                {
+                    var query = "";
+                    if (value == "")
+                        query = "UPDATE " + tableName + " SET " + propertyName + "=NULL WHERE " +
+                            Ids[tableName] + "='" + idValue + "'";
+                    else{
+                        query = "UPDATE " + tableName + " SET " + propertyName + "='" + value + "' WHERE " +
+                             Ids[tableName] + "='" + idValue + "'";}
+
+                    if (!Command.ExecuteCommand(query))
+                    {
+                        TextBlockResult.Foreground = Brushes.Crimson;
+                        TextBlockResult.Text = "Неверные данные: изменения не будут сохранены.";
+                    }
+                    else
+                    {
+                        Command.ExecuteCommand(query);
+                        TextBlockResult.Foreground = Brushes.LimeGreen;
+                        TextBlockResult.Text = "Изменения сохранены.";
+                    }
+                }
+            }
+
+            catch (Exception exc)
+            {
+                //MessageBox.Show(exc.Message);
+            }
         }
     }
 }

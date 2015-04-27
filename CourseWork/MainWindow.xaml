@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="600" MinHeight="450" MinWidth="500"
+        Title="MainWindow" Icon="Icons/book.png" Height="500" Width="650" MinHeight="450" MinWidth="500"
         WindowStartupLocation="CenterScreen"
-        Style="{StaticResource VS2012WindowStyle}" Closing="Window_Closing" d:DataContext="{d:DesignData Source=MainWindowViewModel.cs}" MouseDown="Window_MouseDown" Loaded="Window_Loaded">
+        Style="{StaticResource VS2012WindowStyle}" d:DataContext="{d:DesignData Source=MainWindowViewModel.cs}" MouseDown="Window_MouseDown" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -453,14 +453,15 @@
                                 Name="EditDataGrid"
                                 ItemsSource="{Binding EGrid}"
                                 AutoGenerateColumns="True"
+                                
                                 AutoGeneratingColumn="EditDataGrid_OnAutoGeneratingColumn" 
-                                CurrentCellChanged="EditDataGrid_CurrentCellChanged" 
                                 IsSynchronizedWithCurrentItem="True" MouseRightButtonUp="EditDataGrid_MouseRightButtonUp" 
+                                CanUserAddRows="False"  CellEditEnding="EditDataGrid_CellEditEnding"
                                 >
                                 
                                 <DataGrid.ContextMenu>
                                    <ContextMenu>
-                                        <MenuItem Name ="Delete" Header="Delete" Click="Delete_OnClick"/>
+                                        <MenuItem Name ="Delete" Header="Удалить" Click="Delete_OnClick"/>
                                     </ContextMenu>
                                </DataGrid.ContextMenu>
                                 </DataGrid>
@@ -469,8 +470,8 @@
                             <TextBlock
                                 Name="TextBlockResult"
                                 Text=""
-                                Margin="5, -8, 5, -2"
-                                Foreground="LimeGreen"/>
+                                Margin="5"
+                                Foreground="Green"/>
                         </Grid>
                         <Grid Column="0" Row="4">
                             <Button 

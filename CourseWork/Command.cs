@@ -53,6 +53,22 @@ namespace CourseWork
             return items;
         }
 
+        public static int GetIntValue(string query)
+        {
+            try
+            {
+                var c = Connection.CreateConnection();
+                SqlCommand cmd = new SqlCommand(query, c);
+
+                return (int) cmd.ExecuteScalar();
+            }
+            catch
+            {
+                return 0;
+            }
+
+        }
+
         public static bool ExecuteCommand(string query)
         {
             if (query == null) return false;
