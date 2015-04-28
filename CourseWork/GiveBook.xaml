@@ -1,0 +1,28 @@
+﻿<Window x:Class="CourseWork.GiveBook"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Выдать книгу" WindowStartupLocation="CenterScreen" 
+        Icon="Icons/add.png" Height="600" Width="500" MaxHeight="700" MaxWidth="900" Style="{StaticResource VS2012WindowStyle}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <TextBox Margin="10" Name="TextBox" TextChanged="TextBox_OnTextChanged" KeyDown="TextBox_OnKeyDown"/>
+        
+        <Grid Row="1"><DataGrid Margin="10"
+                                Style="{StaticResource StandardDataGrid}"
+                                RowBackground="GhostWhite"
+                                AlternatingRowBackground="#FFE6E6E6"
+                                BorderBrush="LightGray"
+                                HorizontalGridLinesBrush="Transparent"
+                                VerticalGridLinesBrush="LightGray"
+                                Name="GiveDataGrid"
+                                CanUserAddRows="False" IsReadOnly="True"
+                                >
+
+            </DataGrid>
+        </Grid>
+    </Grid>
+</Window>

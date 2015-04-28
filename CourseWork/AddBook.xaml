@@ -1,0 +1,217 @@
+﻿<Window x:Class="CourseWork.AddBook"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+        Title="Добавить книгу" WindowStartupLocation="CenterScreen" 
+        Icon="Icons/addbook.png" Height="550" Width="380" MaxHeight="550" MaxWidth="380" Style="{StaticResource VS2012WindowStyle}"
+        d:DataContext="{d:DesignData }" >
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        
+        
+        <Grid Row="0" Column="0" Margin="10, 20, 10, 10">
+            <Label Content="Название"/>
+        </Grid>
+        <Grid Row="0" Column="1" Margin="10, 20, 10, 10">
+            <TextBox 
+                TextChanged="BookName_OnTextChanged"
+                BorderThickness="1"
+                BorderBrush="DodgerBlue"
+                Name="BookName"/>
+        </Grid>
+        <Grid Row="0" Column="2">
+            <Image Source="Icons/error.png" Width="20" Margin="10, 20, 10, 10" Visibility="Hidden" Name="ImageName"></Image>
+        </Grid>
+        
+        
+        <Grid Row="1" Column="0" Margin="10, 20, 10, 10">
+            <Label Content="Шифр"/>
+        </Grid>
+        <Grid Row="1" Column="1" Margin="10, 20, 10, 10">
+            <TextBox 
+                TextChanged="BookCode_OnTextChanged"
+                BorderThickness="1"
+                BorderBrush="DodgerBlue"
+                Name="BookCode"/>
+        </Grid>
+        <Grid Row="1" Column="2">
+        <Image Source="Icons/error.png" Width="20" Margin="10, 20, 10, 10" 
+               Visibility="Hidden" Name="ImageCode"
+               ToolTip="Книга с таким кодом уже существует"/>
+        </Grid>
+        
+
+        <Grid Row="2" Column="0" Margin="10">
+            <Label Content="Название издательства"/>
+        </Grid>
+        <Grid Row="2" Column="1" Margin="10">
+            <ComboBox 
+                Name="ComboBoxPublName" 
+                ItemsSource="{Binding PublList}" 
+                Style="{StaticResource StandardComboBox}"
+                SelectionChanged="PublNameComboBox_OnSelectionChanged"
+                />
+        </Grid>
+        <Grid Row="2" Column="2">
+            <Button Name="AddPublButton" Margin="10" 
+                    Style="{StaticResource StandardButton}" 
+                    Background="Transparent"
+                    Click="AddPublButton_OnClick">
+                <StackPanel>
+                    <Image Source="Icons/add2.png" Width="22" Visibility="Visible"  Name="AddPubl"></Image>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <Grid Row="3" Column="0" Margin="10">
+            <Label Content="Год издания"/>
+        </Grid>
+        <Grid Row="3" Column="1" Margin="10">
+            <TextBox 
+                TextChanged="BookYear_OnTextChanged"
+                BorderThickness="1"
+                BorderBrush="DodgerBlue"
+                Name="BookYear"/>
+        </Grid>
+        <Grid Row="3" Column="2">
+            <Image Source="Icons/error.png" Width="20" Margin="10, 20, 10, 10" Visibility="Hidden" Name="ImageYear"></Image>
+        </Grid>
+
+        
+        <Grid Row="4" Column="0" Margin="10">
+            <Label Content="Количество страниц"/>
+        </Grid>
+        <Grid Row="4" Column="1" Margin="10">
+            <TextBox 
+                TextChanged="BookPages_OnTextChanged"
+                BorderThickness="1"
+                BorderBrush="DodgerBlue"
+                Name="BookPages"/>
+        </Grid>
+        <Grid Row="4" Column="2">
+            <Image Source="Icons/error.png" Width="20" Margin="10, 20, 10, 10" Visibility="Hidden" Name="ImagePages"></Image>
+        </Grid>
+
+
+        <Grid Row="5" Column="0" Margin="10">
+            <Label Content="Произведение в книге"/>
+        </Grid>
+        <Grid Row="5" Column="1" Margin="10">
+            <ComboBox 
+                SelectionChanged="ComboBoxOpuses_OnSelectionChanged"
+                Name="ComboBoxOpuses"
+                ItemsSource="{Binding Path=Opuses}"
+                Style="{StaticResource StandardComboBox}"/>
+        </Grid>
+        <Grid Row="5" Column="2">
+            <Button Name="AddOpusButton" Margin="10" 
+                    Style="{StaticResource StandardButton}" 
+                    Background="Transparent"
+                    Click="AddOpusButton_OnClick">
+                <StackPanel>
+                    <Image Source="Icons/add2.png" Width="22" Visibility="Visible" Name="AddOpus"></Image>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <Grid Row="6" Column="0" Margin="10">
+            <Label Name="Label2" Content="Произведение в книге" Foreground="DarkGray"/>
+        </Grid>
+        <Grid Row="6" Column="1" Margin="10">
+            <ComboBox
+                MaxDropDownHeight="300"
+                SelectionChanged="ComboBoxOpuses2_OnSelectionChanged"
+                IsEnabled="False"
+                Name="ComboBoxOpuses2"
+                ItemsSource="{Binding Path=Opuses}"
+                Style="{StaticResource StandardComboBox}"/>
+        </Grid>
+        <Grid Row="6" Column="2">
+            <Button Name="RemoveOpusButton2" Margin="10" 
+                    IsEnabled="False"
+                    Style="{StaticResource StandardButton}" 
+                    Background="Transparent"
+                    Click="RemoveOpuseButton_OnClick">
+                <StackPanel>
+                    <Image Source="Icons/remove.png" Width="22" Visibility="Visible" Name="AddOpus2"></Image>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <Grid Row="7" Column="0" Margin="10">
+            <Label Name="Label3" Content="Произведение в книге" Foreground="DarkGray"/>
+        </Grid>
+        <Grid Row="7" Column="1" Margin="10">
+            <ComboBox 
+                SelectionChanged="ComboBoxOpuses3_OnSelectionChanged"
+                IsEnabled="False"
+                Name="ComboBoxOpuses3"
+                ItemsSource="{Binding Path=Opuses}"
+                Style="{StaticResource StandardComboBox}"
+                />
+        </Grid>
+        <Grid Row="7" Column="2">
+            <Button Name="RemoveOpusButton3" Margin="10" 
+                    IsEnabled="False"
+                    Style="{StaticResource StandardButton}" 
+                    Background="Transparent"
+                    Click="RemoveOpus3Button_OnClick">
+                <StackPanel>
+                    <Image Source="Icons/remove.png" Width="22" Visibility="Visible" Name="AddOpus3"></Image>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+
+
+        <Grid Row="8" Column="0" Margin="10">
+            <Label Content="Аннотация"/>
+        </Grid>
+        <Grid Row="8" Column="1" Margin="10">
+            <TextBox 
+                TextChanged="BookAnn_OnTextChanged"
+                BorderThickness="1"
+                BorderBrush="DodgerBlue"
+                Name="BookAnn"/>
+        </Grid>
+        <Grid Row="8" Column="2">
+            <Image Source="Icons/error.png" Width="20" Margin="10, 20, 10, 10" Visibility="Hidden" Name="ImageAnn"></Image>
+        </Grid>
+        
+
+        <Grid Row="9" Column="0" Margin="10, 15, 10, 15">
+            <Button 
+                Name="Cancel"
+                Click="Cancel_OnClick"
+                Content="Отменить"
+                Style="{StaticResource StandardButton}"
+                />
+        </Grid>
+        <Grid Row="9" Column="1" ColumnSpan="2" Margin="10, 15, 10, 15">
+            <Button 
+                Name="Add"
+                Click="Add_OnClick"
+                Content="Добавить"
+                Style="{StaticResource StandardButton}"
+                />
+        </Grid>
+    </Grid>
+</Window>

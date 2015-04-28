@@ -83,6 +83,9 @@
     <Compile Include="ExitWindow.xaml.cs">
       <DependentUpon>ExitWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GiveBook.xaml.cs">
+      <DependentUpon>GiveBook.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LastBook.cs" />
     <Compile Include="Styles\CustomizedWindow\VS2012WindowStyle.cs" />
     <Page Include="AddAuthor.xaml">
@@ -106,6 +109,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ExitWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GiveBook.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -218,7 +225,7 @@
     <Resource Include="Icons\sql.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\1429989919_699099-icon-24-file-sql-128.png" />
+    <Resource Include="Icons\sql2.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\Embed_Close-128.png" />
@@ -260,6 +267,17 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\addbook.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\back.png" />
+    <Resource Include="Icons\give.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\calendar.png" />
+    <Resource Include="Icons\exit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\back2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

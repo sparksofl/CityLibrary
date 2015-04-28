@@ -11,7 +11,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition />
         </Grid.RowDefinitions>
-
+        
         <Grid Row="0" Width="Auto" Height="Auto">
             <Rectangle Fill="#FE3476E9"></Rectangle>
             <DockPanel>
@@ -35,19 +35,31 @@
                             Click="MenuClick"
                             Header="Последние действия"
                             Background="GhostWhite"
-                            Foreground="#FE3476E9"/>
+                            Foreground="#FE3476E9">
+                            <MenuItem.Icon>
+                                <Image Source="Icons/calendar.png" Width="25"></Image>
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem 
                             Name="MGiveBook"
                             Click="MenuClick"
                             Header="Выдать книгу"
                             Background="GhostWhite"
-                            Foreground="#FE3476E9"/>
+                            Foreground="#FE3476E9">
+                            <MenuItem.Icon>
+                                <Image Source="Icons/add2.png" Width="25"></Image>
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem 
                             Name="MTakeBackBook"
                             Click="MenuClick"
                             Header="Принять книгу"
                             Background="GhostWhite"
-                            Foreground="#FE3476E9"/>
+                            Foreground="#FE3476E9">
+                            <MenuItem.Icon>
+                                <Image Source="Icons/back2.png" Width="25"></Image>
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem 
                             Name="MEditing"
                             Click="MenuClick"
@@ -65,7 +77,7 @@
                             Background="GhostWhite"
                             Foreground="#FE3476E9">
                             <MenuItem.Icon>
-                                <Image Source="Icons/Embed_Close-128.png" Width="25"></Image>
+                                <Image Source="Icons/sql.png" Width="25"></Image>
                             </MenuItem.Icon>
                             </MenuItem>
                         <MenuItem 
@@ -85,7 +97,11 @@
                             Click="MenuClick"
                             Header="Выход"
                             Background="GhostWhite"
-                            Foreground="#FE3476E9"/>
+                            Foreground="#FE3476E9">
+                            <MenuItem.Icon>
+                                <Image Source="Icons/exit.png" Width="25"></Image>
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </MenuItem>
                 </Menu>
                 <TextBlock 
@@ -165,6 +181,8 @@
                         
                         <Grid Row="1" Column="0">
                             <ListBox
+                                Foreground="#FE3476E9"
+                                FontStretch="ExtraExpanded"
                                 Name="ListBoxLastGiven"
                                 ItemsSource="{Binding LastGivenBooks}"
                                 Height="Auto"
@@ -172,212 +190,161 @@
                                 Background="GhostWhite"
                                 BorderThickness="1"
                                 BorderBrush="LightGray"
-                                >
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel>
-                                            <TextBlock Text="{Binding BName}" />
-                                            <TextBlock Text="{Binding GiveDate}" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                            <!--<StackPanel>
-                                <TextBlock 
-                                Margin="10, 5, 10, 0"
-                                FontSize="11"
-                                Foreground="#FE3476E9"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="Компьютерная электротехника и схемотехника"/>
-                                <TextBlock 
-                                Margin="10, 0, 10, 10"
-                                FontSize="11"
-                                Foreground="Gray"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="10.08.15"/>
-                                <TextBlock 
-                                Margin="10, 5, 10, 0"
-                                FontSize="11"
-                                Foreground="#FE3476E9"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="Компьютерная электротехника и схемотехника"/>
-                                <TextBlock 
-                                Margin="10, 0, 10, 10"
-                                FontSize="11"
-                                Foreground="Gray"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="10.08.15"/>
-                                <TextBlock 
-                                Margin="10, 5, 10, 0"
-                                FontSize="11"
-                                Foreground="#FE3476E9"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="Компьютерная электротехника и схемотехника"/>
-                                <TextBlock 
-                                Margin="10, 0, 10, 10"
-                                FontSize="11"
-                                Foreground="Gray"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="10.08.15"/>
-                                <TextBlock 
-                                Margin="10, 5, 10, 0"
-                                FontSize="11"
-                                Foreground="#FE3476E9"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="Компьютерная электротехника и схемотехника"/>
-                                <TextBlock 
-                                Margin="10, 0, 10, 10"
-                                FontSize="11"
-                                Foreground="Gray"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="10.08.15"/>
-                                <TextBlock 
-                                Margin="10, 5, 10, 0"
-                                FontSize="11"
-                                Foreground="#FE3476E9"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="Java 8: Полное руководство"/>
-                                <TextBlock 
-                                Margin="10, 0, 10, 10"
-                                FontSize="11"
-                                Foreground="Gray"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="10.08.15"/>
-                            </StackPanel>-->
+                                />
+                            
                         </Grid>
-                        <Grid Row="2" Column="1">
-                            <StackPanel>
-                                <TextBlock 
-                                Margin="10, 5, 10, 0"
-                                FontSize="11"
+                        <Grid Row="1" Column="1">
+                            <ListBox
                                 Foreground="#FE3476E9"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="Компьютерная электротехника и схемотехника"/>
-                                <TextBlock 
-                                Margin="10, 0, 10, 10"
-                                FontSize="11"
-                                Foreground="Gray"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="10.08.15"/>
-                                <TextBlock 
-                                Margin="10, 5, 10, 0"
-                                FontSize="11"
-                                Foreground="#FE3476E9"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="Компьютерная электротехника и схемотехника"/>
-                                <TextBlock 
-                                Margin="10, 0, 10, 10"
-                                FontSize="11"
-                                Foreground="Gray"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="10.08.15"/>
-                                <TextBlock 
-                                Margin="10, 5, 10, 0"
-                                FontSize="11"
-                                Foreground="#FE3476E9"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="Компьютерная электротехника и схемотехника"/>
-                                <TextBlock 
-                                Margin="10, 0, 10, 10"
-                                FontSize="11"
-                                Foreground="Gray"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="10.08.15"/>
-                                <TextBlock 
-                                Margin="10, 5, 10, 0"
-                                FontSize="11"
-                                Foreground="#FE3476E9"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="Компьютерная электротехника и схемотехника"/>
-                                <TextBlock 
-                                Margin="10, 0, 10, 10"
-                                FontSize="11"
-                                Foreground="Gray"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="10.08.15"/>
-                                <TextBlock 
-                                Margin="10, 5, 10, 0"
-                                FontSize="11"
-                                Foreground="#FE3476E9"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="Java 8: Полное руководство"/>
-                                <TextBlock 
-                                Margin="10, 0, 10, 10"
-                                FontSize="11"
-                                Foreground="Gray"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="10.08.15"/>
-                            </StackPanel>
+                                FontStretch="ExtraExpanded"
+                                Name="ListBoxLastBack"
+                                ItemsSource="{Binding LastBackBooks}"
+                                Height="Auto"
+                                Margin="10, -10, 10, 10"
+                                Background="GhostWhite"
+                                BorderThickness="1"
+                                BorderBrush="LightGray"
+                                />
                         </Grid>
-                        <Grid Row="2" Column="2">
-                            <StackPanel>
-                                <TextBlock 
-                                Margin="10, 5, 10, 0"
-                                FontSize="11"
-                                Foreground="#FEEC0731"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="Компьютерная электротехника и схемотехника"/>
-                                <TextBlock 
-                                Margin="10, 0, 10, 10"
-                                FontSize="11"
-                                Foreground="Gray"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="10.08.15"/>
-                                <TextBlock 
-                                Margin="10, 5, 10, 0"
-                                FontSize="11"
-                                Foreground="#FEEC0731"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="Компьютерная электротехника и схемотехника"/>
-                                <TextBlock 
-                                Margin="10, 0, 10, 10"
-                                FontSize="11"
-                                Foreground="Gray"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="10.08.15"/>
-                                <TextBlock 
-                                Margin="10, 5, 10, 0"
-                                FontSize="11"
-                                Foreground="#FEEC0731"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="Компьютерная электротехника и схемотехника"/>
-                                <TextBlock 
-                                Margin="10, 0, 10, 10"
-                                FontSize="11"
-                                Foreground="Gray"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="10.08.15"/>
-                                <TextBlock 
-                                Margin="10, 5, 10, 0"
-                                FontSize="11"
-                                Foreground="#FEEC0731"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="Компьютерная электротехника и схемотехника"/>
-                                <TextBlock 
-                                Margin="10, 0, 10, 10"
-                                FontSize="11"
-                                Foreground="Gray"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="10.08.15"/>
-                                <TextBlock 
-                                Margin="10, 5, 10, 0"
-                                FontSize="11"
-                                Foreground="#FEEC0731"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="Java 8: Полное руководство"/>
-                                <TextBlock 
-                                Margin="10, 0, 10, 10"
-                                FontSize="11"
-                                Foreground="Gray"
-                                TextTrimming="CharacterEllipsis" 
-                                Text="10.08.15"/>
-                            </StackPanel>
+                        <Grid Row="1" Column="2">
+                            <ListBox
+                                Foreground="#FE3476E9"
+                                FontStretch="ExtraExpanded"
+                                Name="ListBoxOverdue"
+                                ItemsSource="{Binding OverdueBooks}"
+                                Height="Auto"
+                                Margin="10, -10, 10, 10"
+                                Background="GhostWhite"
+                                BorderThickness="1"
+                                BorderBrush="LightGray"
+                                />
                         </Grid>
 
                     </Grid>
                 </TabItem>
-                <TabItem Name="TGiveBook" Header="Выдать книгу" Visibility="Hidden"/>
-                <TabItem Name="TTakeBackBook" Header="Принять книгу" Visibility="Hidden"/>
+                <TabItem Name="TGiveBook" Header="Выдать книгу" Visibility="Hidden">
+                    
+                    <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                    <TextBlock Text="Поиск " FontSize="13" Margin="10, 0, 10, 10"/>
+                    <Grid Row="0" Column="1">
+                        <ComboBox Name="ComboBoxEnt" SelectionChanged="ComboBoxEnt_OnSelectionChanged" Style="{StaticResource StandardComboBox}" ItemsSource="{Binding ComboBoxEntity}" Margin="5, 0, 10, 5"/>
+                    </Grid>
+                    <Grid Row="0" Column="2">
+                        <TextBlock Text="Критерий: " FontSize="13" Margin="60, 0, 10, 10"></TextBlock>
+                    </Grid>
+                        <Grid Row="0" Column="3">
+                            <ComboBox Name="ComboBoxParam" Style="{StaticResource StandardComboBox}" ItemsSource="{Binding ComboBoxParameter}" Margin="5, 0, 10, 5"></ComboBox>
+                        </Grid>
+                        <Grid Row="1" Column="0" ColumnSpan="4">
+                            <TextBox
+                                Margin="10, 5"
+                                Text="Введите поисковый запрос..."
+                                Name="TextBoxSearchGive"
+                                BorderThickness="0, 0, 0, 1"
+                                Background="GhostWhite"
+                                BorderBrush="DimGray"
+                                Foreground="DimGray" d:DataContext="{d:DesignData }" GotFocus="TextBoxSearchGive_GotFocus" KeyDown="TextBoxSearchGive_OnKeyDown" />
+                        </Grid>
+                        
+                        
+                    <Grid Row="2" Column="0" ColumnSpan="4">
+                        <DataGrid Margin="10"
+                                Style="{StaticResource StandardDataGrid}"
+                                RowBackground="GhostWhite"
+                                AlternatingRowBackground="#FFE6E6E6"
+                                BorderBrush="LightGray"
+                                HorizontalGridLinesBrush="Transparent"
+                                VerticalGridLinesBrush="LightGray"
+                                Name="GiveDataGrid"
+                                AutoGenerateColumns="True"
+                                CanUserAddRows="False" 
+                                />
+                        </Grid>
+                        
+                        <Grid Row="3" Column="0">
+                            <Label Content="Читатель: " Margin="10, 0"></Label>
+                        </Grid>
+                        <Grid Row="3" Column="1" ColumnSpan="2" Margin="10, 5">
+                            <ComboBox Style="{StaticResource StandardComboBox}" SelectionChanged="ComboBoxClients_OnSelectionChanged" Name="ComboBoxClients" ItemsSource="{Binding ClientsList}"/>
+                        </Grid>
+                        <Grid Row="3" Column="3" >
+                            <Button Name="ButtonGive" Margin="10, 5" Style="{StaticResource StandardButton}" IsEnabled="False" Click="ButtonGive_OnClick" Content="Выдать"></Button>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+                <TabItem Name="TTakeBackBook" Header="Принять книгу" Visibility="Hidden">
+                    
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Поиск " FontSize="13" Margin="10, 0, 10, 10"/>
+                        <Grid Row="0" Column="1">
+                            <ComboBox Name="ComboBoxEntBack" SelectionChanged="ComboBoxEntBack_OnSelectionChanged" Style="{StaticResource StandardComboBox}" 
+                                      ItemsSource="{Binding ComboBoxEntity}" Margin="5, 0, 10, 5"/>
+                        </Grid>
+                        <Grid Row="0" Column="2">
+                            <TextBlock Text="Критерий: " FontSize="13" Margin="60, 0, 10, 10"></TextBlock>
+                        </Grid>
+                        <Grid Row="0" Column="3">
+                            <ComboBox Name="ComboBoxParamBack" Style="{StaticResource StandardComboBox}" ItemsSource="{Binding ComboBoxParameter}" Margin="5, 0, 10, 5"></ComboBox>
+                        </Grid>
+                        <Grid Row="1" Column="0" ColumnSpan="4">
+                            <TextBox
+                                Margin="10, 5"
+                                Text="Введите поисковый запрос..."
+                                Name="TextBoxSearchBack"
+                                BorderThickness="0, 0, 0, 1"
+                                Background="GhostWhite"
+                                BorderBrush="DimGray"
+                                Foreground="DimGray" d:DataContext="{d:DesignData }" GotFocus="TextBoxSearchBack_GotFocus" KeyDown="TextBoxSearcBack_OnKeyDown" />
+                        </Grid>
+
+
+                        <Grid Row="2" Column="0" ColumnSpan="4">
+                            <DataGrid Margin="10"
+                                      SelectionChanged="BackDataGrid_OnSelectionChanged"
+                                Style="{StaticResource StandardDataGrid}"
+                                RowBackground="GhostWhite"
+                                AlternatingRowBackground="#FFE6E6E6"
+                                BorderBrush="LightGray"
+                                HorizontalGridLinesBrush="Transparent"
+                                VerticalGridLinesBrush="LightGray"
+                                Name="BackDataGrid"
+                                AutoGenerateColumns="True"
+                                CanUserAddRows="False" 
+                                />
+                        </Grid>
+
+                        
+                        <Grid Row="3" Column="2" ColumnSpan="2" >
+                            <Button Name="ButtonBack" Margin="10, 5" Style="{StaticResource StandardButton}" IsEnabled="False" Click="ButtonBack_OnClick" Content="Принять"></Button>
+                        </Grid>
+                        </Grid>
+                </TabItem>
+                
+                
                 <TabItem Name="TEditing" Header="Редактирование" Visibility="Hidden">
                     <Grid>
                         <Grid.RowDefinitions>

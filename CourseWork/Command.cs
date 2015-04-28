@@ -53,6 +53,35 @@ namespace CourseWork
             return items;
         }
 
+        public static List<string> ReadData(string query, string s, string s2)
+        {
+            Connection.CreateConnection();
+
+            var items = new List<string>();
+            var c = CreateCommand(query);
+            var reader = c.ExecuteReader();
+            do
+            {
+
+                while (reader.Read())
+                {
+
+                    items.Add(reader[s].ToString());
+                    items.Add(reader[s2].ToString());
+                }
+                /*items.Add(reader.GetValue(2).ToString());
+                items.Add(reader.GetValue(3).ToString());
+                items.Add(reader.GetValue(4).ToString());
+                items.Add(reader.GetValue(5).ToString());*/
+            } while (reader.NextResult());
+            //if (!reader.Read())
+            //reader = c.ExecuteReader();
+
+            Connection.SqlConnection.Close();
+
+            return items;
+        }
+
         public static int GetIntValue(string query)
         {
             try

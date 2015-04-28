@@ -35,10 +35,11 @@ D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddC
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddClient.g.cs
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddAuthor.baml
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddAuthor.g.cs
-D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\CourseWork.csprojResolveAssemblyReference.cache
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddPublisher.baml
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddPublisher.g.cs
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddOpus.baml
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddOpus.g.cs
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddBook.baml
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddBook.g.cs
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\GiveBook.baml
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\GiveBook.g.cs

@@ -61,9 +61,8 @@ namespace CourseWork
         public static List<string> ClientsList = Command.ReadData("SELECT Name FROM Clients;", "Name");
 
         public static List<string> ComboBoxList = new List<string>();
-        public static List<string> LastGivenBooks = Command.ReadData("SELECT BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL", "BName", "GiveDate");
-        public static List<string> LastBackBooks = Command.ReadData("SELECT BName, BackDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NOT NULL", "BName", "BackDate");
-        public static List<string> OverdueBooks = Command.ReadData("SELECT BName, Term FROM Overdue", "BName", "Term");
+        public static List<string> LastGivenBooks =  new List<string>();//Command.ReadData("SELECT BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL", "BName");
+        public static List<string> LastBackBooks = Command.ReadData("SELECT BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL", "BName");
         public static List<string> BName = new List<string>();
         public  static  List<string> ComboBoxFiltersList = new List<string>(); 
         public  static  List<string> AuthorsFiltersList = new List<string>(); 
@@ -72,15 +71,21 @@ namespace CourseWork
         public MainWindow()
         {
             InitializeComponent();
-            //Command.ExecuteCommand("DROP VIEW Overdue;");
-            //Command.ExecuteCommand(
-            //    "CREATE VIEW Overdue AS SELECT BName, DATEADD(month,1,GiveDate) AS Term FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL GROUP BY GiveDate, BName HAVING DATEADD(month,1,GiveDate)< CAST(GETDATE() AS DATE)");
             ComboBoxList.AddRange(Tables.Keys);
             ComboBoxTables.ItemsSource = ComboBoxList;
             ComboBoxTables.SelectedIndex = 1;
+            for (int i = 0; i < 5; i++)
+            {
+                LastGivenBooks[i] =
+                    Command.ReadData(
+                        "SELECT BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL",
+                        "BName")[i];
+                LastGivenBooks.Add(
+                    Command.ReadData(
+                        "SELECT BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL",
+                        "GiveDate")[i]);
+            }
             ListBoxLastGiven.ItemsSource = LastGivenBooks;
-            ListBoxLastBack.ItemsSource = LastBackBooks;
-            ListBoxOverdue.ItemsSource = OverdueBooks;
             ComboBoxEnt.ItemsSource = ComboBoxEntity;
             ComboBoxParam.ItemsSource = ComboBoxParameter;
             ComboBoxEntBack.ItemsSource = ComboBoxEntity;
@@ -93,19 +98,16 @@ namespace CourseWork
             ComboBoxFiltersList.AddRange(Command.ReadData("SELECT DISTINCT PName FROM Books B, Publishers P WHERE B.PublID=P.PublID",
                      "PName"));
             ComboBoxFilters.ItemsSource = ComboBoxFiltersList;
-            AuthorsFiltersList = new List<string>();
             AuthorsFiltersList = Command.ReadData("SELECT DISTINCT Nationality FROM Authors",
-                      "Nationality");
+                     "Nationality");
             OpusesFiltersList = Command.ReadData("SELECT DISTINCT Genre FROM Opuses",
                         "Genre");
             LastGivenBooks = Command.ReadData("SELECT BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL", "BName");
-            LastGivenBooks.AddRange(Command.ReadData("SELECT BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL", "GiveDate"));
 
         }
 
         private void DoQuery(object sender, RoutedEventArgs e)
         {
-            var errorMessage = "";
             try
             {
                 ErrorTextBlock.Text = "";
@@ -116,16 +118,6 @@ namespace CourseWork
 
                 // query string from richTextBox
                 string query = new TextRange(RichTextBox.Document.ContentStart, RichTextBox.Document.ContentEnd).Text;
-
-                var stringForCheck = query;
-                stringForCheck = stringForCheck.ToUpper();
-                if (stringForCheck.Contains("DROP") || stringForCheck.Contains("INSERT") || stringForCheck.Contains("UPDATE") || stringForCheck.Contains("DELETE")) 
-                {
-                    errorMessage = "YOU'VE GOT NO POWER HERE";
-                    ErrorTextBlock.Text = errorMessage;
-                    ErrorTextBlock.ToolTip = errorMessage;
-                    return;
-                }
 
                 // creating command to perform
                 SqlCommand command = new SqlCommand(query, connection);
@@ -741,32 +733,6 @@ namespace CourseWork
                          " LIKE '%" +
                          TextBoxSearchGive.Text + "%' AND (B.Code NOT IN (SELECT Code FROM Checkout) OR BackDate IS NOT NULL);",
                 GiveDataGrid);
-
-            LastGivenBooks = Command.ReadData("SELECT BName, BackDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NOT NULL", "BName", "BackDate");
-            ListBoxLastGiven.ItemsSource = LastGivenBooks;
-        }
-
-        private string SwitchValue(string entity, string param)
-        {
-            var property = "";
-            if (entity == "Книги")
-            {
-                if (param == "Название")
-                    property = "BName";
-                if (param == "Автор")
-                    property = "AName";
-                if (param == "Шифр")
-                    property = "B.Code";
-            }
-
-            if (entity == "Произведения")
-            {
-                if (param == "Название")
-                    property = "OName";
-                if (param == "Автор")
-                    property = "AName";
-            }
-            return property;
         }
 
         private void ComboBoxClients_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -869,9 +835,6 @@ namespace CourseWork
 
             Command.ExecuteCommand("UPDATE Checkout SET BackDate=CAST(GETDATE() AS DATE) WHERE ChID=" + idValue);
             FillDataGrid(back, BackDataGrid);
-
-            LastBackBooks = Command.ReadData("SELECT BName, BackDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NOT NULL", "BName", "BackDate");
-            ListBoxLastBack.ItemsSource = LastBackBooks;
 
         }
     }
