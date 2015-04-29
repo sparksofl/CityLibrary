@@ -101,7 +101,7 @@ namespace CourseWork
         }
         private void OpusName_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            CheckField(OpusName, ImageName, new Regex(@"(^[\p{L}\s'.-]{3,30}$)"));
+            CheckField(OpusName, ImageName, new Regex(@"(^[,\d\p{L}\s'.-]{3,30}$)"));
         }
 
         private void OpusYear_OnTextChanged(object sender, TextChangedEventArgs e)

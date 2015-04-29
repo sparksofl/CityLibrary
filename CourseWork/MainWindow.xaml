@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
-        Title="MainWindow" Icon="Icons/book.png" Height="500" Width="650" MinHeight="450" MinWidth="500"
+        Title="Городская библиотека" Icon="Icons/Books-128(1).png" Height="550" Width="750" MinHeight="450" MinWidth="500"
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource VS2012WindowStyle}" d:DataContext="{d:DesignData Source=MainWindowViewModel.cs}" MouseDown="Window_MouseDown" Loaded="Window_Loaded">
     <Grid>
@@ -136,8 +136,9 @@
                         
                         <Grid Row="0" Column="0">
                             <Button 
+                            IsEnabled="False"
                             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                            Content="Последняя выдача    >"
+                            Content="    Последняя выдача    "
                             Background="#FE3476E9"
                             Foreground="AliceBlue"
                             BorderBrush="Transparent"
@@ -145,13 +146,14 @@
                             HorizontalAlignment="Stretch"
                             Margin="10" 
                             FontFamily="Calibri Light" 
-                            FontSize="15"
+                            FontSize="16"
                             />
                         </Grid>
                         <Grid Row="0" Column="1">
                             <Button 
+                            IsEnabled="False"
                             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                            Content="Последний приём    >"
+                            Content="  Последний приём    "
                             Background="#FE3476E9"
                             Foreground="AliceBlue"
                             BorderBrush="Transparent"
@@ -159,14 +161,15 @@
                             HorizontalAlignment="Stretch"
                             Margin="10" 
                             FontFamily="Calibri Light"
-                            FontSize="15"
+                            FontSize="16"
                             >
                             </Button>
                         </Grid>
                         <Grid Row="0" Column="2">
                             <Button 
+                            IsEnabled="False"
                             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                            Content="Просрочено    >"
+                            Content="   Просрочено    "
                             Background="#FEEC0731"
                             Foreground="AliceBlue"
                             BorderBrush="Transparent"
@@ -174,13 +177,14 @@
                             HorizontalAlignment="Stretch"
                             Margin="10"
                             FontFamily="Calibri Light" 
-                            FontSize="15"
+                            FontSize="16"
                             >
                             </Button>
                         </Grid>
                         
                         <Grid Row="1" Column="0">
                             <ListBox
+                                IsEnabled="False"
                                 Foreground="#FE3476E9"
                                 FontStretch="ExtraExpanded"
                                 Name="ListBoxLastGiven"
@@ -190,11 +194,19 @@
                                 Background="GhostWhite"
                                 BorderThickness="1"
                                 BorderBrush="LightGray"
-                                />
+                                >
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Margin" Value="5"/>
+                                        <Setter Property="FontSize" Value="12.5"></Setter>
+                                    </Style> 
+                                </ListBox.ItemContainerStyle>
+                            </ListBox>
                             
                         </Grid>
                         <Grid Row="1" Column="1">
                             <ListBox
+                                IsEnabled="False"
                                 Foreground="#FE3476E9"
                                 FontStretch="ExtraExpanded"
                                 Name="ListBoxLastBack"
@@ -204,10 +216,18 @@
                                 Background="GhostWhite"
                                 BorderThickness="1"
                                 BorderBrush="LightGray"
-                                />
+                                >
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Margin" Value="5"/>
+                                        <Setter Property="FontSize" Value="12.5"></Setter>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                            </ListBox>
                         </Grid>
                         <Grid Row="1" Column="2">
                             <ListBox
+                                IsEnabled="False"
                                 Foreground="#FE3476E9"
                                 FontStretch="ExtraExpanded"
                                 Name="ListBoxOverdue"
@@ -217,7 +237,15 @@
                                 Background="GhostWhite"
                                 BorderThickness="1"
                                 BorderBrush="LightGray"
-                                />
+                                >
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Margin" Value="5"/>
+                                        <Setter Property="FontSize" Value="12.5"></Setter>
+                                        <Setter Property="Foreground" Value="Crimson"></Setter>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                            </ListBox>
                         </Grid>
 
                     </Grid>
@@ -237,15 +265,15 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                    <TextBlock Text="Поиск " FontSize="13" Margin="10, 0, 10, 10"/>
+                    <TextBlock Text="Поиск " FontSize="13" Margin="10, 10, 10, 10"/>
                     <Grid Row="0" Column="1">
-                        <ComboBox Name="ComboBoxEnt" SelectionChanged="ComboBoxEnt_OnSelectionChanged" Style="{StaticResource StandardComboBox}" ItemsSource="{Binding ComboBoxEntity}" Margin="5, 0, 10, 5"/>
+                        <ComboBox Name="ComboBoxEnt" SelectionChanged="ComboBoxEnt_OnSelectionChanged" Style="{StaticResource StandardComboBox}" ItemsSource="{Binding ComboBoxEntity}" Margin="5, 10, 10, 5"/>
                     </Grid>
                     <Grid Row="0" Column="2">
-                        <TextBlock Text="Критерий: " FontSize="13" Margin="60, 0, 10, 10"></TextBlock>
+                        <TextBlock Text="Критерий: " FontSize="13" Margin="60, 10, 10, 10"></TextBlock>
                     </Grid>
                         <Grid Row="0" Column="3">
-                            <ComboBox Name="ComboBoxParam" Style="{StaticResource StandardComboBox}" ItemsSource="{Binding ComboBoxParameter}" Margin="5, 0, 10, 5"></ComboBox>
+                            <ComboBox Name="ComboBoxParam" Style="{StaticResource StandardComboBox}" ItemsSource="{Binding ComboBoxParameter}" Margin="5, 10, 10, 5"></ComboBox>
                         </Grid>
                         <Grid Row="1" Column="0" ColumnSpan="4">
                             <TextBox
@@ -270,6 +298,7 @@
                                 Name="GiveDataGrid"
                                 AutoGenerateColumns="True"
                                 CanUserAddRows="False" 
+                                SelectionChanged="GiveDataGrid_OnSelectionChanged"
                                 />
                         </Grid>
                         
@@ -280,7 +309,7 @@
                             <ComboBox Style="{StaticResource StandardComboBox}" SelectionChanged="ComboBoxClients_OnSelectionChanged" Name="ComboBoxClients" ItemsSource="{Binding ClientsList}"/>
                         </Grid>
                         <Grid Row="3" Column="3" >
-                            <Button Name="ButtonGive" Margin="10, 5" Style="{StaticResource StandardButton}" IsEnabled="False" Click="ButtonGive_OnClick" Content="Выдать"></Button>
+                            <Button Name="ButtonGive" Margin="10, 5" MinHeight="30" Style="{StaticResource StandardButton}" IsEnabled="False" Click="ButtonGive_OnClick" Content="Выдать"></Button>
                         </Grid>
                     </Grid>
                 </TabItem>
@@ -299,16 +328,16 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Поиск " FontSize="13" Margin="10, 0, 10, 10"/>
+                        <TextBlock Text="Поиск " FontSize="13" Margin="10, 10, 10, 10"/>
                         <Grid Row="0" Column="1">
                             <ComboBox Name="ComboBoxEntBack" SelectionChanged="ComboBoxEntBack_OnSelectionChanged" Style="{StaticResource StandardComboBox}" 
-                                      ItemsSource="{Binding ComboBoxEntity}" Margin="5, 0, 10, 5"/>
+                                      ItemsSource="{Binding ComboBoxEntity}" Margin="5, 10, 10, 5"/>
                         </Grid>
                         <Grid Row="0" Column="2">
-                            <TextBlock Text="Критерий: " FontSize="13" Margin="60, 0, 10, 10"></TextBlock>
+                            <TextBlock Text="Критерий: " FontSize="13" Margin="60, 10, 10, 10"></TextBlock>
                         </Grid>
                         <Grid Row="0" Column="3">
-                            <ComboBox Name="ComboBoxParamBack" Style="{StaticResource StandardComboBox}" ItemsSource="{Binding ComboBoxParameter}" Margin="5, 0, 10, 5"></ComboBox>
+                            <ComboBox Name="ComboBoxParamBack" Style="{StaticResource StandardComboBox}" ItemsSource="{Binding ComboBoxParameter}" Margin="5, 10, 10, 5"></ComboBox>
                         </Grid>
                         <Grid Row="1" Column="0" ColumnSpan="4">
                             <TextBox
@@ -339,7 +368,7 @@
 
                         
                         <Grid Row="3" Column="2" ColumnSpan="2" >
-                            <Button Name="ButtonBack" Margin="10, 5" Style="{StaticResource StandardButton}" IsEnabled="False" Click="ButtonBack_OnClick" Content="Принять"></Button>
+                            <Button Name="ButtonBack" Margin="10, 5" MinHeight="30" Style="{StaticResource StandardButton}" IsEnabled="False" Click="ButtonBack_OnClick" Content="Принять"></Button>
                         </Grid>
                         </Grid>
                 </TabItem>
@@ -464,7 +493,7 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="0.6*"/>
-                            <RowDefinition Height="0.3*"/>
+                            <RowDefinition Height="0.2*"/>
                             <RowDefinition Height="1.3*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
@@ -494,6 +523,7 @@
                             Grid.Column="0"
                             Margin="10, 0, 5, 0"
                             Text=""
+                            FontSize="13"
                             TextWrapping="Wrap"
                             Foreground="Crimson"
                             />
@@ -504,6 +534,7 @@
                             Name="DoQueryButton"
                             Click="DoQuery"
                             Content=" Выполнить "
+                            MinHeight="30"
                             Margin="5, 0, 10, 0"
                             Background="#FE3476E9"
                             Foreground="GhostWhite"

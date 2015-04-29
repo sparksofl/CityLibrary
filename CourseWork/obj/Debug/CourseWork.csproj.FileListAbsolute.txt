@@ -43,3 +43,4 @@ D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddB
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddBook.g.cs
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\GiveBook.baml
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\GiveBook.g.cs
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\CourseWork.csprojResolveAssemblyReference.cache

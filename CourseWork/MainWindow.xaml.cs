@@ -61,9 +61,9 @@ namespace CourseWork
         public static List<string> ClientsList = Command.ReadData("SELECT Name FROM Clients;", "Name");
 
         public static List<string> ComboBoxList = new List<string>();
-        public static List<string> LastGivenBooks = Command.ReadData("SELECT BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL", "BName", "GiveDate");
-        public static List<string> LastBackBooks = Command.ReadData("SELECT BName, BackDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NOT NULL", "BName", "BackDate");
-        public static List<string> OverdueBooks = Command.ReadData("SELECT BName, Term FROM Overdue", "BName", "Term");
+        public static List<string> LastGivenBooks = Command.ReadData("SELECT TOP 7 BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL ORDER BY GiveDate DESC", "BName", "GiveDate");
+        public static List<string> LastBackBooks = Command.ReadData("SELECT TOP 7 BName, BackDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NOT NULL ORDER BY BackDate DESC", "BName", "BackDate");
+        public static List<string> OverdueBooks = Command.ReadData("SELECT TOP 7 BName, Term FROM Overdue ORDER BY Term DESC", "BName", "Term");
         public static List<string> BName = new List<string>();
         public  static  List<string> ComboBoxFiltersList = new List<string>(); 
         public  static  List<string> AuthorsFiltersList = new List<string>(); 
@@ -72,9 +72,11 @@ namespace CourseWork
         public MainWindow()
         {
             InitializeComponent();
-            //Command.ExecuteCommand("DROP VIEW Overdue;");
+
+            // DO NOT DELETE — it's important to see how this view was created
             //Command.ExecuteCommand(
-            //    "CREATE VIEW Overdue AS SELECT BName, DATEADD(month,1,GiveDate) AS Term FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL GROUP BY GiveDate, BName HAVING DATEADD(month,1,GiveDate)< CAST(GETDATE() AS DATE)");
+            //    "CREATE VIEW Overdue AS SELECT B.Code, BName, ChID, DATEADD(month,1,GiveDate) AS 'Term', C.CardNumber FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL GROUP BY GiveDate, BName, B.Code, ChID HAVING (CAST(DATEADD(month,1,GiveDate) AS DATETIME)) < GETDATE();");
+            //Command.ExecuteCommand("DROP VIEW Overdue;");ComboBoxList.AddRange(Tables.Keys);
             ComboBoxList.AddRange(Tables.Keys);
             ComboBoxTables.ItemsSource = ComboBoxList;
             ComboBoxTables.SelectedIndex = 1;
@@ -98,14 +100,11 @@ namespace CourseWork
                       "Nationality");
             OpusesFiltersList = Command.ReadData("SELECT DISTINCT Genre FROM Opuses",
                         "Genre");
-            LastGivenBooks = Command.ReadData("SELECT BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL", "BName");
-            LastGivenBooks.AddRange(Command.ReadData("SELECT BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL", "GiveDate"));
-
+            LastGivenBooks = Command.ReadData("SELECT TOP 7 BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL ORDER BY GiveDate DESC", "BName", "GiveDate");
         }
 
         private void DoQuery(object sender, RoutedEventArgs e)
         {
-            var errorMessage = "";
             try
             {
                 ErrorTextBlock.Text = "";
@@ -121,7 +120,7 @@ namespace CourseWork
                 stringForCheck = stringForCheck.ToUpper();
                 if (stringForCheck.Contains("DROP") || stringForCheck.Contains("INSERT") || stringForCheck.Contains("UPDATE") || stringForCheck.Contains("DELETE")) 
                 {
-                    errorMessage = "YOU'VE GOT NO POWER HERE";
+                    var errorMessage = "YOU'VE GOT NO POWER HERE";
                     ErrorTextBlock.Text = errorMessage;
                     ErrorTextBlock.ToolTip = errorMessage;
                     return;
@@ -473,6 +472,9 @@ namespace CourseWork
                 Command.ExecuteCommand(query);
                 FillDataGrid("SELECT * FROM " + tableName, EditDataGrid);
                 TextBlockResult.Text = "Строка удалена.";
+
+                UpdateFilters(tableName);
+                UpdateLists();
             }
         }
 
@@ -518,6 +520,7 @@ namespace CourseWork
             ComboBoxClients.ItemsSource = ClientsList;
             
             UpdateFilters(tableName);
+            UpdateLists();
         }
 
         private void UpdateFilters(string tableName)
@@ -561,8 +564,7 @@ namespace CourseWork
             TextBlockResult.Text = "";
             try
             {
-
-                 var element = e.EditingElement as TextBox;
+                var element = e.EditingElement as TextBox;
                 var value = element.Text;
                 var dgDataGrid = EditDataGrid;//sender as DataGrid;
 
@@ -607,6 +609,8 @@ namespace CourseWork
                         UpdateFilters(tableName);
                     }
                 }
+                UpdateFilters(tableName);
+                UpdateLists();
             }
 
             catch (Exception exc)
@@ -627,44 +631,42 @@ namespace CourseWork
         {
             var entity = "";
             var param = "";
-            var property = "AName";
+            string property;// = "AName";
             
             TextBoxSearchGive.BorderBrush = Brushes.DarkSlateGray;
-            if (ComboBoxEnt.SelectedValue == null && ComboBoxParam.SelectedValue == null)
-            {
-                TextBoxSearchGive.BorderBrush = Brushes.Crimson;
-                return;
-            }
-
-            entity = ComboBoxEnt.SelectedValue.ToString();
-            param = ComboBoxParam.SelectedValue.ToString();
-
-            if (entity == "Книги")
-            {
-                if (param == "Название")
-                    property = "BName";
-                if (param == "Автор")
-                    property = "AName";
-                if (param == "Шифр")
-                    property = "B.Code";
-            }
-
-            if (entity == "Произведения")
-            {
-                if (param == "Название")
-                    property = "OName";
-                if (param == "Автор")
-                    property = "AName"; 
-            }
-
+            
             if (e.Key == Key.Enter)
-                if (ComboBoxClients.SelectedValue!=null)
+            {
+                if (ComboBoxEnt.SelectedValue == null || ComboBoxParam.SelectedValue == null)
+                {
+                    FillDataGrid(
+                        "SELECT B.Code, BName, OName, AName FROM Books B, Content C, Opuses O, Creative Cr, Authors A, Checkout Ch WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND " +
+                        "Ch.Code=B.Code AND (B.Code NOT IN (SELECT Code FROM Checkout WHERE BackDate IS NULL)) " +
+                        "UNION SELECT B.Code, BName, OName, AName FROM Books B, Content C, Opuses O, Creative Cr, Authors A WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND B.Code NOT IN (SELECT Code FROM Checkout)",
+                        GiveDataGrid);
+                    //TextBoxSearchGive.BorderBrush = Brushes.Crimson;
+                    return;
+                }
+                
+                //if (ComboBoxClients.SelectedValue == null) return;
+
+                if (ComboBoxEnt.SelectedValue != null && ComboBoxParam.SelectedValue != null)
+                {
+                    entity = ComboBoxEnt.SelectedValue.ToString();
+                    param = ComboBoxParam.SelectedValue.ToString();
+
+                    property = SwitchValue(entity, param);
+
                     ButtonGive.IsEnabled = true;
-                FillDataGrid(
-                "SELECT B.Code, BName, OName, AName " +
-                "FROM Books B, Content C, Opuses O, Creative Cr, Authors A, Checkout Ch " +
-                "WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND Ch.Code=B.Code AND " + property + " LIKE '%" + TextBoxSearchGive.Text + "%' AND (B.Code NOT IN (SELECT Code FROM Checkout) OR BackDate IS NOT NULL);",
-                GiveDataGrid);
+                    FillDataGrid(
+                        "SELECT B.Code, BName, OName, AName FROM Books B, Content C, Opuses O, Creative Cr, Authors A, Checkout Ch WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND " +
+                        "Ch.Code=B.Code AND (B.Code NOT IN (SELECT Code FROM Checkout WHERE BackDate IS NULL)) AND " +
+                        property + " LIKE '%" + TextBoxSearchGive.Text + "%' " +
+                        "UNION SELECT B.Code, BName, OName, AName FROM Books B, Content C, Opuses O, Creative Cr, Authors A WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND B.Code NOT IN (SELECT Code FROM Checkout) AND " +
+                        property + " LIKE '%" + TextBoxSearchGive.Text + "%' ",
+                        GiveDataGrid);
+                }
+            }
         }
 
         private void ComboBoxEnt_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -672,7 +674,7 @@ namespace CourseWork
             string entity = ComboBoxEnt.SelectedValue.ToString();
             if (entity == "Книги")
             {
-                ComboBoxParameter = new List<string>() { "Название", "Автор", "Шифру" };
+                ComboBoxParameter = new List<string>() { "Название", "Автор", "Шифр" };
                 ComboBoxParam.ItemsSource = ComboBoxParameter;
             }
             else
@@ -700,50 +702,82 @@ namespace CourseWork
             var clientName = ComboBoxClients.SelectedValue.ToString();
             var clientId =
                 Command.ReadData("SELECT CardNumber FROM Clients WHERE Name = '" + clientName + "';", "CardNumber")[0];
-            var booksCounter = Command.GetIntValue("SELECT Count(CardNumber) FROM Checkout WHERE CardNumber=" + clientId + " AND BackDate IS NULL");
+
+            // cant't give more than 5 books
+            var booksCounter =
+                Command.GetIntValue("SELECT Count(CardNumber) FROM Checkout WHERE CardNumber=" + clientId +
+                                    " AND BackDate IS NULL");
             if (booksCounter >= 5)
             {
-                MessageBox.Show("Невозможно выдать ещё одну книгу. Максимальное число книг: 5.", "Ошибка");
+                MessageBox.Show("Невозможно выдать ещё одну книгу. Максимальное число книг: 5.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // can't give a book to a client who hasn't gave his books in time
+            var overdueClientId = Command.GetIntValue("SELECT CardNumber FROM Overdue WHERE CardNumber = " + clientId);
+            if (Convert.ToInt32(clientId) == overdueClientId)
+            {
+                var overdueBooks = Command.ReadData("SELECT BName FROM Overdue WHERE CardNumber=" + clientId, "BName");
+                var books = overdueBooks.Aggregate("", (current, book) => current + book + "\n");
+                MessageBox.Show("Невозможно выдать книгу так как у данного читателя есть задолженности:\n" + books,
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
 
-            var entity = ComboBoxEnt.SelectedValue.ToString();
-            var param = ComboBoxParam.SelectedValue.ToString();
             var property = "";
-
-            entity = ComboBoxEnt.SelectedValue.ToString();
-            param = ComboBoxParam.SelectedValue.ToString();
-
-            if (entity == "Книги")
+            try
             {
-                if (param == "Название")
-                    property = "BName";
-                if (param == "Автор")
-                    property = "AName";
-                if (param == "Шифр")
-                    property = "B.Code";
+                var entity = ComboBoxEnt.SelectedValue.ToString();
+                var param = ComboBoxParam.SelectedValue.ToString();
+
+                entity = ComboBoxEnt.SelectedValue.ToString();
+                param = ComboBoxParam.SelectedValue.ToString();
+
+                property = SwitchValue(entity, param);
+            }
+            catch
+            {
+                
             }
 
-            if (entity == "Произведения")
+            if (ComboBoxClients.SelectedValue != null)
+                Command.ExecuteCommand("INSERT INTO Checkout(Code, CardNumber, GiveDate) VALUES(" + idValue + ", " +
+                                   clientId + ",GETDATE());");
+            if (property != "")
             {
-                if (param == "Название")
-                    property = "OName";
-                if (param == "Автор")
-                    property = "AName";
+                FillDataGrid(
+                        "SELECT B.Code, BName, OName, AName FROM Books B, Content C, Opuses O, Creative Cr, Authors A, Checkout Ch WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND " +
+                        "Ch.Code=B.Code AND (B.Code NOT IN (SELECT Code FROM Checkout WHERE BackDate IS NULL)) AND " +
+                        property + " LIKE '%" + TextBoxSearchGive.Text + "%' " +
+                        "UNION SELECT B.Code, BName, OName, AName FROM Books B, Content C, Opuses O, Creative Cr, Authors A WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND B.Code NOT IN (SELECT Code FROM Checkout) AND " +
+                        property + " LIKE '%" + TextBoxSearchGive.Text + "%' ",
+                        GiveDataGrid);
             }
+            else
+            {
+                FillDataGrid(
+                         "SELECT B.Code, BName, OName, AName FROM Books B, Content C, Opuses O, Creative Cr, Authors A, Checkout Ch WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND " +
+                         "Ch.Code=B.Code AND (B.Code NOT IN (SELECT Code FROM Checkout WHERE BackDate IS NULL)) " +
+                         "UNION SELECT B.Code, BName, OName, AName FROM Books B, Content C, Opuses O, Creative Cr, Authors A WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND B.Code NOT IN (SELECT Code FROM Checkout)",
+                         GiveDataGrid);
+                
+            }
+            UpdateLists();
+        }
 
-            Command.ExecuteCommand("INSERT INTO Checkout(Code, CardNumber, GiveDate) VALUES(" + idValue + ", " +
-                                   clientId + ", CAST(GETDATE() AS DATE));");
-            FillDataGrid("SELECT B.Code, BName, OName, AName " +
-                         "FROM Books B, Content C, Opuses O, Creative Cr, Authors A " +
-                         "WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND " + property +
-                         " LIKE '%" +
-                         TextBoxSearchGive.Text + "%' AND (B.Code NOT IN (SELECT Code FROM Checkout) OR BackDate IS NOT NULL);",
-                GiveDataGrid);
+        private void UpdateLists()
+        {
 
-            LastGivenBooks = Command.ReadData("SELECT BName, BackDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NOT NULL", "BName", "BackDate");
+            LastGivenBooks = Command.ReadData("SELECT TOP 7 BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL ORDER BY GiveDate DESC", "BName", "GiveDate");
             ListBoxLastGiven.ItemsSource = LastGivenBooks;
+
+            LastBackBooks = Command.ReadData("SELECT TOP 7 BName, BackDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NOT NULL ORDER BY BackDate DESC", "BName", "BackDate");
+            ListBoxLastBack.ItemsSource = LastBackBooks;
+
+            OverdueBooks = Command.ReadData("SELECT TOP 7 BName, Term FROM Overdue ORDER BY Term DESC", "BName", "Term");
+            ListBoxOverdue.ItemsSource = OverdueBooks;
+
         }
 
         private string SwitchValue(string entity, string param)
@@ -757,6 +791,7 @@ namespace CourseWork
                     property = "AName";
                 if (param == "Шифр")
                     property = "B.Code";
+                return property;
             }
 
             if (entity == "Произведения")
@@ -765,13 +800,14 @@ namespace CourseWork
                     property = "OName";
                 if (param == "Автор")
                     property = "AName";
+                return property;
             }
             return property;
         }
 
         private void ComboBoxClients_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ComboBoxClients.SelectedValue == null)
+            if (GiveDataGrid.SelectedValue == null)
                 return;
             ButtonGive.IsEnabled = true;
         }
@@ -781,7 +817,7 @@ namespace CourseWork
             string entity = ComboBoxEntBack.SelectedValue.ToString();
             if (entity == "Книги")
             {
-                ComboBoxParameter = new List<string>() { "Название", "Автор", "Шифру" };
+                ComboBoxParameter = new List<string>() { "Название", "Автор", "Шифр" };
                 ComboBoxParamBack.ItemsSource = ComboBoxParameter;
             }
             else
@@ -795,11 +831,11 @@ namespace CourseWork
         {
             TextBoxSearchBack.Text = "";
         }
-        
-        
-        static string back = "SELECT Ch.ChID, B.Code, BName, OName, AName,  GiveDate, Ch.CardNumber, Cl.Name " +
-                           "FROM Books B, Content C, Opuses O, Creative Cr, Authors A, Checkout Ch, CLients Cl " +
-                           "WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND Ch.CardNumber=Cl.CardNumber AND Ch.Code=B.Code AND B.Code IN (SELECT Code FROM Checkout) AND BackDate IS NULL;";
+
+
+        private static string back = "SELECT Ch.ChID, B.Code, BName, OName, AName,  GiveDate, Ch.CardNumber, Cl.Name " +
+                                     "FROM Books B, Content C, Opuses O, Creative Cr, Authors A, Checkout Ch, CLients Cl " +
+                                     "WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND Ch.CardNumber=Cl.CardNumber AND Ch.Code=B.Code AND B.Code IN (SELECT Code FROM Checkout) AND (BackDate IS NULL)";//" OR BackDate < (SELECT Term FROM Overdue));";
 
         private void TextBoxSearcBack_OnKeyDown(object sender, KeyEventArgs e)
         {
@@ -820,27 +856,11 @@ namespace CourseWork
             entity = ComboBoxEntBack.SelectedValue.ToString();
             param = ComboBoxParamBack.SelectedValue.ToString();
 
-            if (entity == "Книги")
-            {
-                if (param == "Название")
-                    property = "BName";
-                if (param == "Автор")
-                    property = "AName";
-                if (param == "Шифр")
-                    property = "B.Code";
-            }
-
-            if (entity == "Произведения")
-            {
-                if (param == "Название")
-                    property = "OName";
-                if (param == "Автор")
-                    property = "AName";
-            }
+            property = SwitchValue(entity, param);
 
             if (e.Key == Key.Enter)
             {
-                string q = "SELECT Ch.ID, B.Code, BName, OName, AName,  GiveDate, Ch.CardNumber, Cl.Name " +
+                string q = "SELECT ChID, B.Code, BName, OName, AName,  GiveDate, Ch.CardNumber, Cl.Name " +
                            "FROM Books B, Content C, Opuses O, Creative Cr, Authors A, Checkout Ch, CLients Cl " +
                            "WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND Ch.CardNumber=Cl.CardNumber AND Ch.Code=B.Code AND " +
                            property + " LIKE '%" + TextBoxSearchBack.Text +
@@ -867,12 +887,16 @@ namespace CourseWork
                 idValue = dvr[0].ToString();
             }
 
-            Command.ExecuteCommand("UPDATE Checkout SET BackDate=CAST(GETDATE() AS DATE) WHERE ChID=" + idValue);
+            Command.ExecuteCommand("UPDATE Checkout SET BackDate=GETDATE() WHERE ChID=" + idValue);
             FillDataGrid(back, BackDataGrid);
 
-            LastBackBooks = Command.ReadData("SELECT BName, BackDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NOT NULL", "BName", "BackDate");
-            ListBoxLastBack.ItemsSource = LastBackBooks;
+            UpdateLists();
 
+        }
+
+        private void GiveDataGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ButtonGive.IsEnabled = false || ComboBoxClients.SelectedValue != null;
         }
     }
 }

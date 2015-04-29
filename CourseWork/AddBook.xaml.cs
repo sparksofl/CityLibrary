@@ -82,7 +82,7 @@ namespace CourseWork
 
         private void BookName_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            CheckField(BookName, ImageName, new Regex(@"(^[\p{L}\s'.-]{3,30}$)"));
+            CheckField(BookName, ImageName, new Regex(@"(^[,\d\p{L}\s'.-]{3,30}$)"));
         }
 
         private void ComboBoxOpuses_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -197,6 +197,19 @@ namespace CourseWork
 
         private void BookAnn_OnTextChanged(object sender, TextChangedEventArgs e)
         {
+            if (BookAnn.Text.Length > 200)
+            {
+                Add.IsEnabled = false;
+                ImageAnn.Visibility = Visibility.Visible;
+                ImageAnn.ToolTip = "Аннотация слишком длинная. Максимальная длинна — 200 симолов.";
+            }
+            else
+            {
+                if (BookName.Text != "" || ComboBoxPublName.SelectedValue != null || BookPages.Text != "" || ComboBoxOpuses.SelectedValue != null)
+                    Add.IsEnabled = true;
+                ImageAnn.Visibility = Visibility.Hidden;
+                ImageAnn.ToolTip = "";
+            }
         }
 
         private void ComboBoxOpuses3_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
