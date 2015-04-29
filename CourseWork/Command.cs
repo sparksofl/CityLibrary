@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Forms;
+using CourseWork;
 
 namespace CourseWork
 {
@@ -25,7 +26,7 @@ namespace CourseWork
             return command;
         }
 
-        public static List<string> ReadData(string query, string s)
+        /*public static List<string> ReadData(string query, string s)
         {
             Connection.CreateConnection();
 
@@ -43,43 +44,98 @@ namespace CourseWork
                 /*items.Add(reader.GetValue(2).ToString());
                 items.Add(reader.GetValue(3).ToString());
                 items.Add(reader.GetValue(4).ToString());
-                items.Add(reader.GetValue(5).ToString());*/
+                items.Add(reader.GetValue(5).ToString());
             } while (reader.NextResult());
             //if (!reader.Read())
             //reader = c.ExecuteReader();
+
+            Connection.SqlConnection.Close();
+
+            return items;
+        }*/
+
+        public static List<string> ReadData(string query, List<string> list)
+        {
+            Connection.CreateConnection();
+
+            var items = new List<string>();
+            var c = CreateCommand(query);
+            var reader = c.ExecuteReader();
+            do
+            {
+                while (reader.Read())
+                {
+                    int i = 0;
+                    while(i < list.Count)
+                        items.Add(reader[i++].ToString());
+                }
+            } while (reader.NextResult());
 
             Connection.SqlConnection.Close();
 
             return items;
         }
 
-        public static List<string> ReadData(string query, string s, string s2)
+        public static List<string> ReadDataToItemsList(string query, List<string> list)
         {
             Connection.CreateConnection();
-
-            var items = new List<string>();
-            var c = CreateCommand(query);
-            var reader = c.ExecuteReader();
-            do
+            var array = new string[list.Count * list.Count];
+            try
             {
-
-                while (reader.Read())
+                var c = CreateCommand(query);
+                var reader = c.ExecuteReader();
+                var j = 0;
+                do
                 {
+                    while (reader.Read())
+                    {
+                        int i = 0;
+                        while (i < list.Count)
+                            array[j] += (reader[list[i++]].ToString()) + "\r";
+                        j++;
+                    }
+                } while (reader.NextResult());
 
-                    items.Add(reader[s].ToString());
-                    items.Add(reader[s2].ToString());
-                }
-                /*items.Add(reader.GetValue(2).ToString());
-                items.Add(reader.GetValue(3).ToString());
-                items.Add(reader.GetValue(4).ToString());
-                items.Add(reader.GetValue(5).ToString());*/
-            } while (reader.NextResult());
-            //if (!reader.Read())
-            //reader = c.ExecuteReader();
+                Connection.SqlConnection.Close();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
 
-            Connection.SqlConnection.Close();
+            return array.ToList();
+        }
 
-            return items;
+        public static List<string> ReadData(string query, string p)
+        {
+            return ReadData(query, new List<string>() {p});
+        }
+
+        public static List<KeyValuePair<string, int>> ReadDataToPair(string query)
+        {
+            Connection.CreateConnection();
+                List<KeyValuePair<string, int>> pairs = new List<KeyValuePair<string, int>>();
+                var c = CreateCommand(query);
+            try
+            {
+                var reader = c.ExecuteReader();
+                do
+                {
+                    while (reader.Read())
+                    {
+                            pairs.Add(new KeyValuePair<string, int>(reader[0].ToString(),
+                                Convert.ToInt32(reader[1])));
+                    }
+                } while (reader.NextResult());
+
+                Connection.SqlConnection.Close();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+
+            return pairs;
         }
 
         public static int GetIntValue(string query)

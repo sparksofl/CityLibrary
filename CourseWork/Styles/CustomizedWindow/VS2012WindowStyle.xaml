@@ -102,7 +102,7 @@
                                             Grid.Column="0"
                                             Source="{Binding Path=Icon, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" 
                                             HorizontalAlignment="Right"
-                                            Margin="4,-7,0,7"
+                                            Margin="4,-7,0,-5"
                                             Width="32"
                                             Height="32"
                                             MouseLeftButtonDown="IconMouseLeftButtonDown"

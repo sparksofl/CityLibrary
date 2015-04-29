@@ -58,16 +58,26 @@ namespace CourseWork
 
         public  static  List<string> ComboBoxEntity = new List<string>(){"Книги", "Произведения"};
         public static List<string> ComboBoxParameter = new List<string>() { "Название", "Автор" };
-        public static List<string> ClientsList = Command.ReadData("SELECT Name FROM Clients;", "Name");
+        public static List<string> ClientsList = Command.ReadData("SELECT Name FROM Clients;", new List<string>() {"Name"});
 
         public static List<string> ComboBoxList = new List<string>();
-        public static List<string> LastGivenBooks = Command.ReadData("SELECT TOP 7 BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL ORDER BY GiveDate DESC", "BName", "GiveDate");
-        public static List<string> LastBackBooks = Command.ReadData("SELECT TOP 7 BName, BackDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NOT NULL ORDER BY BackDate DESC", "BName", "BackDate");
-        public static List<string> OverdueBooks = Command.ReadData("SELECT TOP 7 BName, Term FROM Overdue ORDER BY Term DESC", "BName", "Term");
+        public static List<string> LastGivenBooks = Command.ReadDataToItemsList("SELECT TOP 5 BName, GiveDate, Name FROM Books B, Checkout C, Clients Cl WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NULL ORDER BY GiveDate DESC", new List<string>() { "BName", "GiveDate", "Name" });
+        public List<string> LastBackBooks = Command.ReadDataToItemsList("SELECT TOP 5 BName, BackDate, Name FROM Books B, Checkout C, Clients CL WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NOT NULL ORDER BY BackDate DESC", new List<string>() { "BName", "BackDate", "Name" });
+        public List<string> OverdueBooks = Command.ReadDataToItemsList("SELECT TOP 5 BName, Term, Name FROM Overdue O, Clients C WHERE o.CardNumber=C.CardNumber ORDER BY Term DESC", new List<string>() { "BName", "Term", "Name" });
         public static List<string> BName = new List<string>();
         public  static  List<string> ComboBoxFiltersList = new List<string>(); 
         public  static  List<string> AuthorsFiltersList = new List<string>(); 
-        public  static  List<string> OpusesFiltersList = new List<string>(); 
+        public  static  List<string> OpusesFiltersList = new List<string>();
+
+        public static List<KeyValuePair<string, int>> Years =
+            Command.ReadDataToPair("SELECT Year, COUNT(Year) FROM Books GROUP BY Year");
+        public static List<KeyValuePair<string, int>> Genres =
+            Command.ReadDataToPair("SELECT Genre, COUNT(Genre) FROM Opuses GROUP BY Genre");
+        public static List<KeyValuePair<string, int>> Gives =
+            Command.ReadDataToPair("SELECT DATENAME(weekday, GiveDate), COUNT(GiveDate) FROM Checkout GROUP BY GiveDate");
+        public static List<KeyValuePair<string, int>> Backs =
+            Command.ReadDataToPair("SELECT DATENAME(weekday, BackDate), COUNT(BackDate) FROM Checkout GROUP BY BackDate");
+        public static List<List<KeyValuePair<string, int>>> Checkout = new List<List<KeyValuePair<string, int>>>();
 
         public MainWindow()
         {
@@ -100,7 +110,31 @@ namespace CourseWork
                       "Nationality");
             OpusesFiltersList = Command.ReadData("SELECT DISTINCT Genre FROM Opuses",
                         "Genre");
-            LastGivenBooks = Command.ReadData("SELECT TOP 7 BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL ORDER BY GiveDate DESC", "BName", "GiveDate");
+            //LastGivenBooks = Command.ReadData("SELECT TOP 7 BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL ORDER BY GiveDate DESC", "BName", "GiveDate");
+            FillStartGrids();
+            //UpdateLists();
+
+            Checkout.Add(Gives);
+            Checkout.Add(Backs);
+
+            PieChartYears.DataContext = Years;
+            PieChartGenres.DataContext = Genres;
+            LineChart.DataContext = Gives;
+            LineChart.DataContext = Checkout;
+        }
+
+        private void FillStartGrids()
+        {
+            FillDataGrid(
+                        "SELECT B.Code, BName, OName, AName FROM Books B, Content C, Opuses O, Creative Cr, Authors A, Checkout Ch WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND " +
+                        "Ch.Code=B.Code AND (B.Code NOT IN (SELECT Code FROM Checkout WHERE BackDate IS NULL)) " +
+                        "UNION SELECT B.Code, BName, OName, AName FROM Books B, Content C, Opuses O, Creative Cr, Authors A WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND B.Code NOT IN (SELECT Code FROM Checkout)",
+                        GiveDataGrid);
+            FillDataGrid("SELECT Ch.ChID, B.Code, BName, OName, AName,  GiveDate, Ch.CardNumber, Cl.Name " +
+                                     "FROM Books B, Content C, Opuses O, Creative Cr, Authors A, Checkout Ch, CLients Cl " +
+                                     "WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND Ch.CardNumber=Cl.CardNumber AND Ch.Code=B.Code AND B.Code IN (SELECT Code FROM Checkout) AND (BackDate IS NULL)",//" OR BackDate < (SELECT Term FROM Overdue));";
+                    BackDataGrid);
+            
         }
 
         private void DoQuery(object sender, RoutedEventArgs e)
@@ -223,6 +257,21 @@ namespace CourseWork
             }
         }
 
+        private void ShowChart()
+        {
+            Years = Command.ReadDataToPair("SELECT Year, COUNT(Year) FROM Books GROUP BY Year");
+            Genres = Command.ReadDataToPair("SELECT Genre, COUNT(Genre) FROM Opuses GROUP BY Genre");
+            Gives = Command.ReadDataToPair("SELECT DATENAME(weekday, GiveDate), COUNT(GiveDate) FROM Checkout GROUP BY GiveDate");
+            Backs = Command.ReadDataToPair("SELECT DATENAME(weekday, BackDate), COUNT(BackDate) FROM Checkout GROUP BY BackDate");
+            Checkout.Add(Gives);
+            Checkout.Add(Backs);
+
+            PieChartYears.DataContext = Years;
+            PieChartGenres.DataContext = Genres;
+            LineChart.DataContext = Checkout;
+            LineChart.DataContext = Backs;
+        }
+
         private void EditDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             var displayName = GetPropertyDisplayName(e.PropertyDescriptor);
@@ -267,7 +316,7 @@ namespace CourseWork
 
         private void ComboBoxTables_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            ButtonAdd.IsEnabled = true;
+            ButtonAdd.Visibility= Visibility.Visible;
             string tableName = ComboBoxTables.SelectedValue.ToString();
             LabelFilter.Foreground = Brushes.DarkSlateGray;
             ComboBoxFilters.IsEnabled = true;
@@ -298,7 +347,7 @@ namespace CourseWork
             }
 
             if (tableName == "Выдачи" || tableName == "Содержания" || tableName == "Авторства")
-                ButtonAdd.IsEnabled = false;
+                ButtonAdd.Visibility = Visibility.Collapsed;
         }
 
         private void EditDataGrid_CurrentCellChanged(object sender, EventArgs e)
@@ -516,11 +565,15 @@ namespace CourseWork
                 new AddBook().ShowDialog();
             FillDataGrid("SELECT * FROM " + Tables[ComboBoxTables.SelectedValue.ToString()], EditDataGrid);
 
-            ClientsList = Command.ReadData("SELECT Name FROM Clients;", "Name");
-            ComboBoxClients.ItemsSource = ClientsList;
-            
+            UpdateClients();
             UpdateFilters(tableName);
             UpdateLists();
+        }
+
+        private void UpdateClients()
+        {
+            ClientsList = Command.ReadData("SELECT Name FROM Clients;", "Name");
+            ComboBoxClients.ItemsSource = ClientsList;
         }
 
         private void UpdateFilters(string tableName)
@@ -627,15 +680,15 @@ namespace CourseWork
             }
         }
 
-        private void TextBoxSearchGive_OnKeyDown(object sender, KeyEventArgs e)
+        private void SearchGive(Key e)
         {
             var entity = "";
             var param = "";
             string property;// = "AName";
-            
+
             TextBoxSearchGive.BorderBrush = Brushes.DarkSlateGray;
-            
-            if (e.Key == Key.Enter)
+
+            if (e == Key.Enter)
             {
                 if (ComboBoxEnt.SelectedValue == null || ComboBoxParam.SelectedValue == null)
                 {
@@ -647,7 +700,7 @@ namespace CourseWork
                     //TextBoxSearchGive.BorderBrush = Brushes.Crimson;
                     return;
                 }
-                
+
                 //if (ComboBoxClients.SelectedValue == null) return;
 
                 if (ComboBoxEnt.SelectedValue != null && ComboBoxParam.SelectedValue != null)
@@ -667,6 +720,12 @@ namespace CourseWork
                         GiveDataGrid);
                 }
             }
+        }
+
+        private void TextBoxSearchGive_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            Key k = e.Key;
+            SearchGive(k);
         }
 
         private void ComboBoxEnt_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -764,18 +823,18 @@ namespace CourseWork
                 
             }
             UpdateLists();
+            FillStartGrids();
         }
 
         private void UpdateLists()
         {
-
-            LastGivenBooks = Command.ReadData("SELECT TOP 7 BName, GiveDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL ORDER BY GiveDate DESC", "BName", "GiveDate");
+            LastGivenBooks = Command.ReadData("SELECT TOP 7 BName, GiveDate, Name FROM Books B, Checkout C, Clients Cl WHERE B.Code=C.Code AND Cl.CardNumber=C.CsrdNumber AND BackDate IS NULL ORDER BY GiveDate DESC", new List<string>(){"BName", "GiveDate"});
             ListBoxLastGiven.ItemsSource = LastGivenBooks;
 
-            LastBackBooks = Command.ReadData("SELECT TOP 7 BName, BackDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NOT NULL ORDER BY BackDate DESC", "BName", "BackDate");
+            LastBackBooks = Command.ReadData("SELECT TOP 7 BName, BackDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NOT NULL ORDER BY BackDate DESC", new List<string>(){"BName", "BackDate"});
             ListBoxLastBack.ItemsSource = LastBackBooks;
 
-            OverdueBooks = Command.ReadData("SELECT TOP 7 BName, Term FROM Overdue ORDER BY Term DESC", "BName", "Term");
+            OverdueBooks = Command.ReadData("SELECT TOP 7 BName, Term FROM Overdue ORDER BY Term DESC", new List<string>(){"BName", "Term"});
             ListBoxOverdue.ItemsSource = OverdueBooks;
 
         }
@@ -837,16 +896,16 @@ namespace CourseWork
                                      "FROM Books B, Content C, Opuses O, Creative Cr, Authors A, Checkout Ch, CLients Cl " +
                                      "WHERE B.Code=C.Code AND O.OID=C.OpusID AND O.OID=Cr.OID AND Cr.AID=A.AID AND Ch.CardNumber=Cl.CardNumber AND Ch.Code=B.Code AND B.Code IN (SELECT Code FROM Checkout) AND (BackDate IS NULL)";//" OR BackDate < (SELECT Term FROM Overdue));";
 
-        private void TextBoxSearcBack_OnKeyDown(object sender, KeyEventArgs e)
+        private void SearchBack(Key e)
         {
             var entity = "";
             var param = "";
             var property = "AName";
 
             TextBoxSearchBack.BorderBrush = Brushes.DarkSlateGray;
-            if (ComboBoxEntBack.SelectedValue == null || ComboBoxParamBack.SelectedValue == null && e.Key == Key.Enter)
+            if (ComboBoxEntBack.SelectedValue == null || ComboBoxParamBack.SelectedValue == null && e == Key.Enter)
             {
-                
+
                 FillDataGrid(back,
                     BackDataGrid);
                 //TextBoxSearchBack.BorderBrush = Brushes.Crimson;
@@ -858,7 +917,7 @@ namespace CourseWork
 
             property = SwitchValue(entity, param);
 
-            if (e.Key == Key.Enter)
+            if (e == Key.Enter)
             {
                 string q = "SELECT ChID, B.Code, BName, OName, AName,  GiveDate, Ch.CardNumber, Cl.Name " +
                            "FROM Books B, Content C, Opuses O, Creative Cr, Authors A, Checkout Ch, CLients Cl " +
@@ -870,6 +929,11 @@ namespace CourseWork
                     q,
                     BackDataGrid);
             }
+        }
+
+        private void TextBoxSearcBack_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            SearchBack(e.Key);
         }
 
         private void BackDataGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -891,12 +955,28 @@ namespace CourseWork
             FillDataGrid(back, BackDataGrid);
 
             UpdateLists();
-
+            FillStartGrids();
         }
 
         private void GiveDataGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ButtonGive.IsEnabled = false || ComboBoxClients.SelectedValue != null;
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            new AddClient().ShowDialog();
+            UpdateClients();
+        }
+
+        private void ButtonGiveSearch_OnClick(object sender, RoutedEventArgs e)
+        {
+            SearchGive(Key.Enter);
+        }
+
+        private void ButtonBackSearch_OnClick(object sender, RoutedEventArgs e)
+        {
+            SearchBack(Key.Enter);
         }
     }
 }

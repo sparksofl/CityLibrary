@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
         Title="Добавить произведение" WindowStartupLocation="CenterScreen" 
-        Icon="Icons/opus.png" Height="400" Width="380" MaxHeight="400" MaxWidth="380" Style="{StaticResource VS2012WindowStyle}"
+        Height="400" Width="380" MaxHeight="400" MaxWidth="380" Style="{StaticResource VS2012WindowStyle}"
         d:DataContext="{d:DesignData }">
     <Grid>
         <Grid.ColumnDefinitions>

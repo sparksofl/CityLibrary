@@ -43,4 +43,9 @@ D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddB
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\AddBook.g.cs
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\GiveBook.baml
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\GiveBook.g.cs
-D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\CourseWork.csprojResolveAssemblyReference.cache
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\system.windows.controls.datavisualization.toolkit.dll
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\wpftoolkit.dll
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\system.windows.controls.datavisualization.toolkit.pdb
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\wpftoolkit.pdb
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\Mindscape.WpfElements.dll
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\Mindscape.WpfElements.xml
