@@ -11,7 +11,9 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using MenuItem = System.Windows.Controls.MenuItem;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Net.Mime;
+using System.Text;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -119,7 +121,6 @@ namespace CourseWork
 
             PieChartYears.DataContext = Years;
             PieChartGenres.DataContext = Genres;
-            LineChart.DataContext = Gives;
             LineChart.DataContext = Checkout;
         }
 
@@ -240,6 +241,7 @@ namespace CourseWork
                         currentItem = TQuery;
                         break;
                     case ("MStatistic"):
+                        ShowChart();
                         currentItem = TStatistic;
                         break;
                     case ("MReports"):
@@ -261,15 +263,16 @@ namespace CourseWork
         {
             Years = Command.ReadDataToPair("SELECT Year, COUNT(Year) FROM Books GROUP BY Year");
             Genres = Command.ReadDataToPair("SELECT Genre, COUNT(Genre) FROM Opuses GROUP BY Genre");
-            Gives = Command.ReadDataToPair("SELECT DATENAME(weekday, GiveDate), COUNT(GiveDate) FROM Checkout GROUP BY GiveDate");
-            Backs = Command.ReadDataToPair("SELECT DATENAME(weekday, BackDate), COUNT(BackDate) FROM Checkout GROUP BY BackDate");
+            Gives = Command.ReadDataToPair("SELECT CONVERT(VARCHAR(10), GiveDate, 101), COUNT(*) FROM Checkout GROUP BY CONVERT(VARCHAR(10), GiveDate, 101)");
+            Backs = Command.ReadDataToPair("SELECT CONVERT(VARCHAR(10), BackDate, 101), COUNT(*) FROM Checkout GROUP BY CONVERT(VARCHAR(10), BackDate, 101)");
+            //DATENAME(weekday, BackDate)
+            Checkout = new List<List<KeyValuePair<string, int>>>();
             Checkout.Add(Gives);
             Checkout.Add(Backs);
 
             PieChartYears.DataContext = Years;
             PieChartGenres.DataContext = Genres;
             LineChart.DataContext = Checkout;
-            LineChart.DataContext = Backs;
         }
 
         private void EditDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
@@ -824,17 +827,40 @@ namespace CourseWork
             }
             UpdateLists();
             FillStartGrids();
+
+            var result = MessageBox.Show("Создать отчёт о выданной книге?", "Создание отчёта", MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+            if (result == System.Windows.Forms.DialogResult.Yes)
+            {
+                var path = @"D:\CityLibrary\Book" + idValue + "_" + clientId + "_" + ".txt";
+                var text = Command.GetBookInfo(Convert.ToInt32(idValue));
+                try
+                {
+                    using (TextWriter writer = File.CreateText(path))
+                    {
+                        int i = 0;
+                        while(text.Count > i)
+                            writer.WriteLine(text[i++]);
+                    }
+                    MessageBox.Show("Отчёт создан. Путь: " + path, "Уведомление");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
         }
 
         private void UpdateLists()
         {
-            LastGivenBooks = Command.ReadData("SELECT TOP 7 BName, GiveDate, Name FROM Books B, Checkout C, Clients Cl WHERE B.Code=C.Code AND Cl.CardNumber=C.CsrdNumber AND BackDate IS NULL ORDER BY GiveDate DESC", new List<string>(){"BName", "GiveDate"});
+            LastGivenBooks = LastGivenBooks = Command.ReadDataToItemsList("SELECT TOP 5 BName, GiveDate, Name FROM Books B, Checkout C, Clients Cl WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NULL ORDER BY GiveDate DESC", new List<string>() { "BName", "GiveDate", "Name" });
             ListBoxLastGiven.ItemsSource = LastGivenBooks;
 
-            LastBackBooks = Command.ReadData("SELECT TOP 7 BName, BackDate FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NOT NULL ORDER BY BackDate DESC", new List<string>(){"BName", "BackDate"});
+            LastBackBooks = LastGivenBooks = Command.ReadDataToItemsList("SELECT TOP 5 BName, BackDate, Name FROM Books B, Checkout C, Clients CL WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NOT NULL ORDER BY BackDate DESC", new List<string>() { "BName", "BackDate", "Name" });
             ListBoxLastBack.ItemsSource = LastBackBooks;
 
-            OverdueBooks = Command.ReadData("SELECT TOP 7 BName, Term FROM Overdue ORDER BY Term DESC", new List<string>(){"BName", "Term"});
+            OverdueBooks = LastGivenBooks = Command.ReadDataToItemsList("SELECT TOP 5 BName, Term, Name FROM Overdue O, Clients C WHERE o.CardNumber=C.CardNumber ORDER BY Term DESC", new List<string>() { "BName", "Term", "Name" });
+
             ListBoxOverdue.ItemsSource = OverdueBooks;
 
         }
@@ -977,6 +1003,29 @@ namespace CourseWork
         private void ButtonBackSearch_OnClick(object sender, RoutedEventArgs e)
         {
             SearchBack(Key.Enter);
+        }
+
+        private void ButtonOverdue_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (Command.GetIntValue("SELECT COUNT(*) FROM Overdue") == 0)
+                return;
+            var path = @"D:\CityLibrary\Overdue.txt";
+            var text = Command.GetOverdue();
+            try
+            {
+                using (TextWriter writer = File.CreateText(path))
+                {
+                    int i = 0;
+                    while (text.Count > i)
+                        writer.WriteLine(text[i++]);
+                    writer.WriteLine();
+                }
+                System.Windows.MessageBox.Show("Отчёт создан. Путь: " + path, "Уведомление");
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
         }
     }
 }

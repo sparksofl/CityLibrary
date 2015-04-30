@@ -26,35 +26,12 @@ namespace CourseWork
             return command;
         }
 
-        /*public static List<string> ReadData(string query, string s)
-        {
-            Connection.CreateConnection();
-
-            var items = new List<string>();
-            var c = CreateCommand(query);
-            var reader = c.ExecuteReader();
-            do
-            {
-
-                while (reader.Read())
-                {
-
-                    items.Add(reader[s].ToString());
-                }
-                /*items.Add(reader.GetValue(2).ToString());
-                items.Add(reader.GetValue(3).ToString());
-                items.Add(reader.GetValue(4).ToString());
-                items.Add(reader.GetValue(5).ToString());
-            } while (reader.NextResult());
-            //if (!reader.Read())
-            //reader = c.ExecuteReader();
-
-            Connection.SqlConnection.Close();
-
-            return items;
-        }*/
-
         public static List<string> ReadData(string query, List<string> list)
+        {
+            return ReadData(query, list.Count);
+        }
+
+        public static List<string> ReadData(string query, int n)
         {
             Connection.CreateConnection();
 
@@ -66,8 +43,30 @@ namespace CourseWork
                 while (reader.Read())
                 {
                     int i = 0;
-                    while(i < list.Count)
+                    while (i < n)
                         items.Add(reader[i++].ToString());
+                }
+            } while (reader.NextResult());
+
+            Connection.SqlConnection.Close();
+
+            return items;
+        }
+
+        public static List<string> ReadDataForReport(string query, int n)
+        {
+            Connection.CreateConnection();
+
+            var items = new List<string>();
+            var c = CreateCommand(query);
+            var reader = c.ExecuteReader();
+            do
+            {
+                while (reader.Read())
+                {
+                    int i = 0;
+                    while (i < n)
+                        items.Add(reader[i++].ToString() + "\r\n");
                 }
             } while (reader.NextResult());
 
@@ -91,7 +90,7 @@ namespace CourseWork
                     {
                         int i = 0;
                         while (i < list.Count)
-                            array[j] += (reader[list[i++]].ToString()) + "\r";
+                            array[j] += (reader[list[i++]]) + "\r";
                         j++;
                     }
                 } while (reader.NextResult());
@@ -174,5 +173,31 @@ namespace CourseWork
             }
             return true;
         }
+
+        public static List<string> GetClienInfo(int id)
+        {
+            var query =
+                "SELECT CONCAT('Читательский битет №', C.CardNumber), CONCAT('Имя:    ', Name), " +
+                "CONCAT('Адресс:    ', ClientAddress), CONCAT('Номер телефона:    ', PhoneNumber) FROM Clients C" +
+                " WHERE C.CardNumber=" + id;
+
+            return ReadDataForReport(query, 4);
+        }
+
+        public static List<string> GetBookInfo(int code)
+        {
+            var query =
+                "SELECT DISTINCT CONCAT('Шифр:    ', B.Code), CONCAT('Название книги:    ', BName), CONCAT('Автор:    ', AName), CONCAT('Дата выдачи:    ',GiveDate) FROM Books B, Checkout Ch, Content Ct, Opuses O, Creative Cr, Authors A, Clients Cl " +
+                "WHERE B.Code=Ch.Code AND Ct.Code=B.Code AND O.OID=Ct.OpusID AND Cr.OID=O.OID AND A.AID=Cr.AID AND Cl.CardNumber=Ch.CardNumber AND BackDate IS NULL AND B.Code=" +
+                code;
+            return ReadDataForReport(query, 4);
+        }
+
+        public static List<string> GetOverdue()
+        {
+            var query =
+                "SELECT CONCAT('Шифр:    ', Code), CONCAT('Название:    ', BName), CONCAT('Последний срок сдачи:    ', Term), CONCAT('Читатель:    ', Name) FROM Overdue O, Clients C WHERE O.CardNumber=C.CardNumber";
+            return ReadDataForReport(query, 4);
+        } 
     }
 }

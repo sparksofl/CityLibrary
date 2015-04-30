@@ -49,3 +49,4 @@ D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\syst
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\wpftoolkit.pdb
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\Mindscape.WpfElements.dll
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\Mindscape.WpfElements.xml
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\CourseWork.csprojResolveAssemblyReference.cache

@@ -39,7 +39,7 @@
                             Header="Последние действия"
                             Foreground="#FF3939E6">
                             <MenuItem.Icon>
-                                <Image Source="Icons/calendar2.png" Width="20" Margin="2, 2, 5, 2"></Image>
+                                <Image Source="Icons/calendar.png" Width="20" Margin="2, 2, 5, 2"></Image>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem 
@@ -59,7 +59,7 @@
                             Background="GhostWhite"
                             Foreground="#FF3939E6">
                             <MenuItem.Icon>
-                                <Image Source="Icons/plusbook.png" Width="22" Margin="2, 2, 5, 2"></Image>
+                                <Image Source="Icons/back3.png" Width="22" Margin="2, 2, 5, 2"></Image>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem 
@@ -92,12 +92,6 @@
                                 <Image Source="Icons/statistic.png" Width="22" Margin="2, 2, 5, 2" IsEnabled="False"></Image>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem 
-                            Name="MReports"
-                            Click="MenuClick"
-                            Header="Отчёты"
-                            Background="GhostWhite"
-                            Foreground="#FF3939E6"/>
                         <MenuItem 
                             Name="Exit"
                             Click="MenuClick"
@@ -133,6 +127,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
@@ -187,8 +182,8 @@
                             >
                             </Button>
                         </Grid>
-                        
-                        <Grid Row="1" Column="0">
+
+                        <Grid Row="1" Column="0" RowSpan="2">
                             <ListBox
                                 IsEnabled="False"
                                 Foreground="#FE3476E9"
@@ -213,9 +208,8 @@
                                     </Style>
                                 </ListBox.ItemContainerStyle>
                             </ListBox>
-                            
                         </Grid>
-                        <Grid Row="1" Column="1">
+                        <Grid Row="1" Column="1" RowSpan="2">
                             <ListBox
                                 IsEnabled="False"
                                 Foreground="#FE3476E9"
@@ -268,8 +262,26 @@
                                 </ListBox.ItemContainerStyle>
                             </ListBox>
                         </Grid>
-
+                        <Grid Row="2" Column="2">
+                        <Button 
+                            Name="ButtonOverdue"
+                            IsEnabled="True"
+                            Click="ButtonOverdue_OnClick"
+                            Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                            Content="   Создать отчёт    "
+                            Background="LightCoral"
+                            Foreground="AliceBlue"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            HorizontalAlignment="Stretch"
+                            Margin="10"
+                            FontFamily="Calibri Light" 
+                            FontSize="16"
+                            >
+                        </Button>
                     </Grid>
+
+        </Grid>
                 </TabItem>
                 <TabItem Name="TGiveBook" Header="Выдать книгу" Visibility="Hidden">
                     
