@@ -93,7 +93,7 @@ namespace CourseWork
             Add.IsEnabled = true;
             tb.BorderBrush = Brushes.DodgerBlue;
             i.Visibility = Visibility.Hidden;
-            if (OpusName.Text == "" || ComboBoxAuthors.SelectedValue == null)
+            if (OpusName.Text == "" || ComboBoxAuthors.SelectedValue == null || OpusGenre.Text == null || OpusGenre.Text == " ")
                 Add.IsEnabled = false;
             if (IsCorrect(tb.Text, r) || tb.Text == "" && tb.Name != OpusName.Name) return;
             tb.BorderBrush = Brushes.Crimson;

@@ -39,7 +39,7 @@
                             Header="Последние действия"
                             Foreground="#FF3939E6">
                             <MenuItem.Icon>
-                                <Image Source="Icons/calendar.png" Width="20" Margin="2, 2, 5, 2"></Image>
+                                <Image Source="Icons/calendar2.png" Width="20" Margin="2, 2, 5, 2"></Image>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem 
@@ -198,8 +198,8 @@
                                 >
                                 <ListBox.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
-                                        <Setter Property="Margin" Value="7, 6, 7, 0"/>
-                                        <Setter Property="FontSize" Value="12.5"></Setter>
+                                        <Setter Property="Margin" Value="5, 5, 0, 0"/>
+                                        <Setter Property="FontSize" Value="12"></Setter>
                                         <Style.Triggers>
                                             <Trigger Property="IsEnabled" Value="False">
                                                 <Setter Property="Foreground" Value="#FE3476E9"></Setter>
@@ -224,8 +224,8 @@
                                 >
                                 <ListBox.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
-                                        <Setter Property="Margin" Value="7, 6, 7, 0"/>
-                                        <Setter Property="FontSize" Value="12.5"/>
+                                        <Setter Property="Margin" Value="5, 5, 0, 0"/>
+                                        <Setter Property="FontSize" Value="12"/>
                                         <Style.Triggers>
                                             <Trigger Property="IsEnabled" Value="False">
                                                 <Setter Property="Foreground" Value="#FE3476E9"/>
@@ -250,7 +250,7 @@
                                 >
                                 <ListBox.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
-                                        <Setter Property="Margin" Value="7, 6, 7, 0"/>
+                                        <Setter Property="Margin" Value="5, 5, 0, 0"/>
                                         <Setter Property="FontSize" Value="12.5"></Setter>
                                         <Setter Property="Foreground" Value="Crimson"></Setter>
                                         <Style.Triggers>
@@ -567,7 +567,7 @@
                 <TabItem Name="TQuery" Header="Ввод запроса" Visibility="Hidden">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="0.6*"/>
+                            <RowDefinition Height="0.8*"/>
                             <RowDefinition Height="0.2*"/>
                             <RowDefinition Height="1.3*"/>
                         </Grid.RowDefinitions>
@@ -649,19 +649,19 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="0.7*"/>
+                            <RowDefinition Height="1*"/>
                         </Grid.RowDefinitions>
                         
-                        <Grid Row="0" Column="0" Margin="10, 0">
-                            <chartingToolkit:Chart  Name="PieChartYears" Title="Года издания" FontWeight="ExtraLight"  BorderBrush="Transparent" Background="Transparent">
+                        <Grid Row="0" Column="0" Margin="10, -20">
+                            <chartingToolkit:Chart  Name="PieChartYears" Title="Годы издания" FontWeight="ExtraLight"  BorderBrush="Transparent" Background="Transparent">
                                 <chartingToolkit:PieSeries DependentValuePath="Value" 
             IndependentValuePath="Key" ItemsSource="{Binding}" 
             IsSelectionEnabled="True" FontWeight="Light"/>
                             </chartingToolkit:Chart>
                         </Grid>
 
-                        <Grid Row="0" Column="1" Margin="10, 0">
+                        <Grid Row="0" Column="1" Margin="10, -20">
                             <chartingToolkit:Chart  Name="PieChartGenres" Title="Жанры" FontWeight="ExtraLight"  BorderBrush="Transparent" Background="Transparent">
                                 <chartingToolkit:PieSeries DependentValuePath="Value" 
             IndependentValuePath="Key" ItemsSource="{Binding}" 
@@ -669,7 +669,7 @@
                             </chartingToolkit:Chart>
                             </Grid>
                         
-                        <Grid Row="1" Column="0" ColumnSpan="2" Margin="10, 0">
+                        <Grid Row="1" Column="0" ColumnSpan="2" Margin="10, -10">
 
                             <chartingToolkit:Chart  Name="LineChart" Title="Книгооборот"  FontWeight="ExtraLight"  BorderBrush="Transparent" Background="Transparent">
                                 <chartingToolkit:LineSeries Name="Give" Title="Выдачи" DependentValuePath="Value" 
@@ -690,7 +690,7 @@
                 </TabItem>
                     
                 
-                <TabItem Header="Таблица" Visibility="Hidden">
+                <TabItem Header="Рекомендации" Visibility="Hidden">
                     <DataGrid
                         Margin="10">
                     </DataGrid>

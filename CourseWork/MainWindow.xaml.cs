@@ -71,20 +71,26 @@ namespace CourseWork
         public  static  List<string> AuthorsFiltersList = new List<string>(); 
         public  static  List<string> OpusesFiltersList = new List<string>();
 
-        public static List<KeyValuePair<string, int>> Years =
-            Command.ReadDataToPair("SELECT Year, COUNT(Year) FROM Books GROUP BY Year");
-        public static List<KeyValuePair<string, int>> Genres =
-            Command.ReadDataToPair("SELECT Genre, COUNT(Genre) FROM Opuses GROUP BY Genre");
-        public static List<KeyValuePair<string, int>> Gives =
-            Command.ReadDataToPair("SELECT DATENAME(weekday, GiveDate), COUNT(GiveDate) FROM Checkout GROUP BY GiveDate");
-        public static List<KeyValuePair<string, int>> Backs =
-            Command.ReadDataToPair("SELECT DATENAME(weekday, BackDate), COUNT(BackDate) FROM Checkout GROUP BY BackDate");
-        public static List<List<KeyValuePair<string, int>>> Checkout = new List<List<KeyValuePair<string, int>>>();
+        public static List<KeyValuePair<string, int>> Years;// =
+           // Command.ReadDataToPair("SELECT Year, COUNT(Year) FROM Books GROUP BY Year");
+
+        public static List<KeyValuePair<string, int>> Genres;// =
+          //  Command.ReadDataToPair("SELECT Genre, COUNT(Genre) FROM Opuses GROUP BY Genre");
+
+        public List<KeyValuePair<string, int>> Gives;// =
+            //Command.ReadDataToPair("SELECT CONVERT(VARCHAR(10), GiveDate, 101), COUNT(*) FROM Checkout GROUP BY CONVERT(VARCHAR(10), GiveDate, 101)");
+        public List<KeyValuePair<string, int>> Backs;// =
+            //Command.ReadDataToPair("SELECT CONVERT(VARCHAR(10), BackDate, 101), COUNT(*) FROM Checkout WHERE BackDate IS NOT NULL GROUP BY CONVERT(VARCHAR(10), BackDate, 101)");
+        public List<List<KeyValuePair<string, int>>> Checkout = new List<List<KeyValuePair<string, int>>>();
 
         public MainWindow()
         {
             InitializeComponent();
+            SetSources();
+        }
 
+        private void SetSources()
+        {
             // DO NOT DELETE — it's important to see how this view was created
             //Command.ExecuteCommand(
             //    "CREATE VIEW Overdue AS SELECT B.Code, BName, ChID, DATEADD(month,1,GiveDate) AS 'Term', C.CardNumber FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL GROUP BY GiveDate, BName, B.Code, ChID HAVING (CAST(DATEADD(month,1,GiveDate) AS DATETIME)) < GETDATE();");
@@ -100,12 +106,8 @@ namespace CourseWork
             ComboBoxEntBack.ItemsSource = ComboBoxEntity;
             ComboBoxParamBack.ItemsSource = ComboBoxParameter;
             ComboBoxClients.ItemsSource = ClientsList;
-            
-            ComboBoxFiltersList =
-                 Command.ReadData("SELECT DISTINCT Year FROM Books B, Publishers P WHERE B.PublID=P.PublID",
-                     "Year");
-            ComboBoxFiltersList.AddRange(Command.ReadData("SELECT DISTINCT PName FROM Books B, Publishers P WHERE B.PublID=P.PublID",
-                     "PName"));
+
+            ComboBoxFiltersList = new List<string>() { "1850-1900", "1900-1950", "1950-1970", "1970-1980", "1980-1990", "1990-2000", "2000-2010", "2010-2020" };
             ComboBoxFilters.ItemsSource = ComboBoxFiltersList;
             AuthorsFiltersList = new List<string>();
             AuthorsFiltersList = Command.ReadData("SELECT DISTINCT Nationality FROM Authors",
@@ -116,12 +118,7 @@ namespace CourseWork
             FillStartGrids();
             //UpdateLists();
 
-            Checkout.Add(Gives);
-            Checkout.Add(Backs);
-
-            PieChartYears.DataContext = Years;
-            PieChartGenres.DataContext = Genres;
-            LineChart.DataContext = Checkout;
+            ShowChart();
         }
 
         private void FillStartGrids()
@@ -254,19 +251,74 @@ namespace CourseWork
                 currentItem.IsSelected = true;
                 CurrentMenu.Text = currentItem.Header.ToString();
             }
-            catch
+            catch (Exception exception)
             {
+                MessageBox.Show(exception.Message);
             }
         }
 
         private void ShowChart()
         {
+            /*CREATE VIEW Backs AS SELECT 'backdate' = 
+            CASE 
+            WHEN CONVERT(VARCHAR(10), BackDate, 101) IS NOT NULL 
+            THEN CONVERT(VARCHAR(10), BackDate, 101)
+            ELSE CONVERT(VARCHAR(10), GiveDate, 101) 
+            END,
+            'c' = 
+            CASE
+            WHEN CONVERT(VARCHAR(10), BackDate, 101) IS NOT NULL 
+            THEN COUNT(*) 
+            ELSE 0
+            END
+            FROM Checkout
+            GROUP BY CONVERT(VARCHAR(10), BackDate, 101), CONVERT(VARCHAR(10), GiveDate, 101)*/
+            Gives = new List<KeyValuePair<string, int>>();
+            Backs = new List<KeyValuePair<string, int>>();
+            Years = new List<KeyValuePair<string, int>>();
+            Genres = new List<KeyValuePair<string, int>>();
+            Checkout = new List<List<KeyValuePair<string, int>>>(); 
+
             Years = Command.ReadDataToPair("SELECT Year, COUNT(Year) FROM Books GROUP BY Year");
-            Genres = Command.ReadDataToPair("SELECT Genre, COUNT(Genre) FROM Opuses GROUP BY Genre");
+            Genres = Command.ReadDataToPair("SELECT Genre, COUNT(Genre) FROM Opuses WHERE Genre IS NOT NULL GROUP BY Genre");
             Gives = Command.ReadDataToPair("SELECT CONVERT(VARCHAR(10), GiveDate, 101), COUNT(*) FROM Checkout GROUP BY CONVERT(VARCHAR(10), GiveDate, 101)");
-            Backs = Command.ReadDataToPair("SELECT CONVERT(VARCHAR(10), BackDate, 101), COUNT(*) FROM Checkout GROUP BY CONVERT(VARCHAR(10), BackDate, 101)");
+            Backs = Command.ReadDataToPair("SELECT CONVERT(VARCHAR(10), BackDate, 101), COUNT(*) FROM Checkout WHERE BackDate IS NOT NULL GROUP BY CONVERT(VARCHAR(10), BackDate, 101)");
             //DATENAME(weekday, BackDate)
-            Checkout = new List<List<KeyValuePair<string, int>>>();
+            List<string> gDates = Gives.Select(pair => pair.Key).ToList();
+            List<string> bDates = Backs.Select(pair => pair.Key).ToList();
+            List<string> Dates = new List<string>();
+            Dates.AddRange(gDates);
+            Dates.AddRange(bDates);
+            Dates = Dates.Distinct().ToList();
+            Dates.Sort();
+
+            // отладить и посмотреть индексы элементов для вставки
+            int h = 0;
+            foreach (var item in Dates)
+            {
+                if (!gDates.Contains(item))
+                {
+                    Gives.Add(new KeyValuePair<string, int>(item, 0));
+                    Gives.Insert(h, new KeyValuePair<string, int>(item, 0));
+                }
+                h++;
+            }
+
+            h = 0;
+            foreach (var item in Dates)
+            {
+                if (!bDates.Contains(item))
+                {
+                    Backs.Add(new KeyValuePair<string, int>(item, 0));
+                    Backs.Insert(h, new KeyValuePair<string, int>(item, 0));
+                }
+                h++;
+                //Backs.Add(new KeyValuePair<string, int>(Dates[i], 0));
+            }
+
+            //Gives.Sort((x, y) => x.Value.CompareTo(y.Value));
+            //Backs.Sort((x, y) => x.Value.CompareTo(y.Value));
+
             Checkout.Add(Gives);
             Checkout.Add(Backs);
 
@@ -541,13 +593,27 @@ namespace CourseWork
             string tableName = Tables[ComboBoxTables.SelectedValue.ToString()];
             string getNames = "SELECT COLUMN_NAME from CityLibrary.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" + tableName + "'";
             List<string> properties = Command.ReadData(getNames, "COLUMN_NAME");
-
-            var query = "SELECT * FROM " + Tables[ComboBoxTables.SelectedValue.ToString()] + " WHERE " + properties[0] + " LIKE '%" + searchCriteria + "%'";
-            for (var j = 1; j < properties.Count; j++)
-                query += " UNION " + "SELECT * FROM " + tableName + " WHERE " + properties[j] + " LIKE '%" + searchCriteria + "%'";
-            if (ComboBoxTables.SelectedValue.ToString() == "Книги")
+            string query = "";
+            if (tableName == "Books")
             {
-                query += " UNION " + "SELECT Code, BName, Year, Pages, Info, P.PublID, InnerID FROM Books b INNER JOIN Publishers p ON b.PublID=p.PublID WHERE PName LIKE '%" + searchCriteria + "%'";
+                int a = Convert.ToInt32(searchCriteria.Split('-')[0]);
+                int b = Convert.ToInt32(searchCriteria.Split('-')[1]);
+                query = "SELECT * FROM Books WHERE Year BETWEEN " + a +
+                        " AND " + b;
+            }
+
+            else
+            {
+                query = "SELECT * FROM " + tableName + " WHERE " + properties[0] + " LIKE '%" + searchCriteria + "%'";
+                for (var j = 1; j < properties.Count; j++)
+                    query += " UNION " + "SELECT * FROM " + tableName + " WHERE " + properties[j] + " LIKE '%" +
+                             searchCriteria + "%'";
+                if (ComboBoxTables.SelectedValue.ToString() == "Книги")
+                {
+                    query += " UNION " +
+                             "SELECT Code, BName, Year, Pages, Info, P.PublID, InnerID FROM Books b INNER JOIN Publishers p ON b.PublID=p.PublID WHERE PName LIKE '%" +
+                             searchCriteria + "%'";
+                }
             }
             FillDataGrid(query, EditDataGrid);
         }
@@ -571,6 +637,8 @@ namespace CourseWork
             UpdateClients();
             UpdateFilters(tableName);
             UpdateLists();
+            FillStartGrids();
+            ShowChart();
         }
 
         private void UpdateClients()
@@ -581,12 +649,7 @@ namespace CourseWork
 
         private void UpdateFilters(string tableName)
         {
-            ComboBoxFiltersList =
-                Command.ReadData("SELECT DISTINCT Year, PName FROM Books B, Publishers P WHERE B.PublID=P.PublID",
-                    "Year");
-            ComboBoxFiltersList.AddRange(
-                Command.ReadData("SELECT DISTINCT Year, PName FROM Books B, Publishers P WHERE B.PublID=P.PublID",
-                    "PName"));
+            ComboBoxFiltersList = new List<string>(){"1850-1900", "1900-1950", "1950-1970", "1970-1980", "1980-1990", "1990-2000", "2000-2010", "2010-2020"};
             ComboBoxFilters.ItemsSource = ComboBoxFiltersList;
             AuthorsFiltersList = Command.ReadData("SELECT DISTINCT Nationality FROM Authors",
                 "Nationality");
@@ -755,10 +818,16 @@ namespace CourseWork
         {
             DataGrid dgDataGrid = this.GiveDataGrid;
             string idValue = "";
-            foreach (DataGridCellInfo di in dgDataGrid.SelectedCells)
+            try
             {
-                DataRowView dvr = (DataRowView) di.Item;
-                idValue = dvr[0].ToString();
+                foreach (DataGridCellInfo di in dgDataGrid.SelectedCells)
+                {
+                    DataRowView dvr = (DataRowView) di.Item;
+                    idValue = dvr[0].ToString();
+                }
+            }
+            catch
+            {
             }
 
             var clientName = ComboBoxClients.SelectedValue.ToString();
@@ -827,6 +896,7 @@ namespace CourseWork
             }
             UpdateLists();
             FillStartGrids();
+            ShowChart();
 
             var result = MessageBox.Show("Создать отчёт о выданной книге?", "Создание отчёта", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);

@@ -36,20 +36,25 @@ namespace CourseWork
             Connection.CreateConnection();
 
             var items = new List<string>();
-            var c = CreateCommand(query);
-            var reader = c.ExecuteReader();
-            do
+            try
             {
-                while (reader.Read())
+                var c = CreateCommand(query);
+                var reader = c.ExecuteReader();
+                do
                 {
-                    int i = 0;
-                    while (i < n)
-                        items.Add(reader[i++].ToString());
-                }
-            } while (reader.NextResult());
+                    while (reader.Read())
+                    {
+                        int i = 0;
+                        while (i < n)
+                            items.Add(reader[i++].ToString());
+                    }
+                } while (reader.NextResult());
 
-            Connection.SqlConnection.Close();
-
+                Connection.SqlConnection.Close();
+            }
+            catch
+            {
+            }
             return items;
         }
 
@@ -58,17 +63,23 @@ namespace CourseWork
             Connection.CreateConnection();
 
             var items = new List<string>();
-            var c = CreateCommand(query);
-            var reader = c.ExecuteReader();
-            do
+            try
             {
-                while (reader.Read())
+                var c = CreateCommand(query);
+                var reader = c.ExecuteReader();
+                do
                 {
-                    int i = 0;
-                    while (i < n)
-                        items.Add(reader[i++].ToString() + "\r\n");
-                }
-            } while (reader.NextResult());
+                    while (reader.Read())
+                    {
+                        int i = 0;
+                        while (i < n)
+                            items.Add(reader[i++].ToString() + "\r\n");
+                    }
+                } while (reader.NextResult());
+            }
+            catch
+            {
+            }
 
             Connection.SqlConnection.Close();
 
@@ -99,7 +110,7 @@ namespace CourseWork
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                //MessageBox.Show(e.Message);
             }
 
             return array.ToList();
