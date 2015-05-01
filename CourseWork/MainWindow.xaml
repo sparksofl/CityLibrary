@@ -4,7 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+        xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+        xmlns:charting="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+        xmlns:ctk="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+        xmlns:tk="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         xmlns:winForms="clr-namespace:Microsoft.Reporting.WinForms;assembly=Microsoft.ReportViewer.WinForms"
+        xmlns:visualizationToolkit="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+        xmlns:primitives="clr-namespace:System.Windows.Controls.DataVisualization.Charting.Primitives;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         mc:Ignorable="d"
         Title="Городская библиотека" Icon="Icons/Books-128(1).png" Height="550" Width="750" MinHeight="450" MinWidth="500"
         WindowStartupLocation="CenterScreen"
@@ -145,7 +151,8 @@
                             BorderBrush="Transparent"
                             BorderThickness="0"
                             HorizontalAlignment="Stretch"
-                            Margin="10" 
+                            Margin="10, 0, 10, 10" 
+                            MinHeight="30"
                             FontFamily="Calibri Light" 
                             FontSize="16"
                             />
@@ -160,7 +167,8 @@
                             BorderBrush="Transparent"
                             BorderThickness="0"
                             HorizontalAlignment="Stretch"
-                            Margin="10" 
+                            Margin="10, 0, 10, 10" 
+                            MinHeight="30"
                             FontFamily="Calibri Light"
                             FontSize="16"
                             >
@@ -176,7 +184,8 @@
                             BorderBrush="Transparent"
                             BorderThickness="0"
                             HorizontalAlignment="Stretch"
-                            Margin="10"
+                            Margin="10, 0, 10, 10" 
+                            MinHeight="30"
                             FontFamily="Calibri Light" 
                             FontSize="16"
                             >
@@ -185,7 +194,7 @@
 
                         <Grid Row="1" Column="0" RowSpan="2">
                             <ListBox
-                                IsEnabled="False"
+                                IsEnabled="True"
                                 Foreground="#FE3476E9"
                                 FontStretch="ExtraExpanded"
                                 Name="ListBoxLastGiven"
@@ -196,6 +205,9 @@
                                 BorderThickness="1"
                                 BorderBrush="LightGray"
                                 >
+                                <ListBox.Resources>
+                                    <Style TargetType="ScrollBar" BasedOn="{StaticResource StandardScrollBar}"/>
+                                </ListBox.Resources>
                                 <ListBox.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
                                         <Setter Property="Margin" Value="5, 5, 0, 0"/>
@@ -205,13 +217,20 @@
                                                 <Setter Property="Foreground" Value="#FE3476E9"></Setter>
                                             </Trigger>
                                         </Style.Triggers>
+                                        <Style.Resources>
+                                            <!-- Background of selected item when focussed -->
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="Transparent"/>
+                                            <!-- Background of selected item when not focussed -->
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#FE3476E9"></SolidColorBrush>
+                                        </Style.Resources>
                                     </Style>
                                 </ListBox.ItemContainerStyle>
                             </ListBox>
                         </Grid>
                         <Grid Row="1" Column="1" RowSpan="2">
                             <ListBox
-                                IsEnabled="False"
+                                IsEnabled="True"
                                 Foreground="#FE3476E9"
                                 FontStretch="ExtraExpanded"
                                 Name="ListBoxLastBack"
@@ -222,6 +241,9 @@
                                 BorderThickness="1"
                                 BorderBrush="LightGray"
                                 >
+                                <ListBox.Resources>
+                                    <Style TargetType="ScrollBar" BasedOn="{StaticResource StandardScrollBar}"/>
+                                </ListBox.Resources>
                                 <ListBox.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
                                         <Setter Property="Margin" Value="5, 5, 0, 0"/>
@@ -231,13 +253,20 @@
                                                 <Setter Property="Foreground" Value="#FE3476E9"/>
                                             </Trigger>
                                         </Style.Triggers>
+                                    <Style.Resources>
+                                        <!-- Background of selected item when focussed -->
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="Transparent"/>
+                                        <!-- Background of selected item when not focussed -->
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#FE3476E9"></SolidColorBrush>
+                                        </Style.Resources>
                                     </Style>
                                 </ListBox.ItemContainerStyle>
                             </ListBox>
                         </Grid>
                         <Grid Row="1" Column="2">
                             <ListBox
-                                IsEnabled="False"
+                                IsEnabled="True"
                                 Foreground="#FE3476E9"
                                 FontStretch="ExtraExpanded"
                                 Name="ListBoxOverdue"
@@ -248,16 +277,27 @@
                                 BorderThickness="1"
                                 BorderBrush="LightGray"
                                 >
+                                <ListBox.Resources>
+                                    <Style TargetType="ScrollBar" BasedOn="{StaticResource StandardScrollBar}"/>
+                                </ListBox.Resources>
                                 <ListBox.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
-                                        <Setter Property="Margin" Value="5, 5, 0, 0"/>
-                                        <Setter Property="FontSize" Value="12.5"></Setter>
+                                        <Setter Property="Margin" Value="5, 5, 0, -5"/>
+                                        <Setter Property="FontSize" Value="12"></Setter>
                                         <Setter Property="Foreground" Value="Crimson"></Setter>
+                                        <Setter Property="IsSelected" Value="False"/>
                                         <Style.Triggers>
                                             <Trigger Property="IsEnabled" Value="False">
                                                 <Setter Property="Foreground" Value="Crimson"></Setter>
                                             </Trigger>
                                         </Style.Triggers>
+                                        <Style.Resources>
+                                            <!-- Background of selected item when focussed -->
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="Transparent"/>
+                                            <!-- Background of selected item when not focussed -->
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Crimson"></SolidColorBrush>
+                                        </Style.Resources>
                                     </Style>
                                 </ListBox.ItemContainerStyle>
                             </ListBox>
@@ -349,7 +389,7 @@
                                 SelectionChanged="GiveDataGrid_OnSelectionChanged"
                                 >
                                 <DataGrid.Resources>
-                                    <Style TargetType="ScrollBar" BasedOn="{StaticResource StandardScrollBar}"></Style>
+                                    <Style TargetType="ScrollBar" BasedOn="{StaticResource StandardScrollBar}"/>
                                 </DataGrid.Resources>
                             </DataGrid>
                         </Grid>
@@ -649,35 +689,325 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="0.7*"/>
+                            <RowDefinition Height="0.6*"/>
                             <RowDefinition Height="1*"/>
                         </Grid.RowDefinitions>
                         
-                        <Grid Row="0" Column="0" Margin="10, -20">
+                        <Grid Row="0" Column="0" Margin="10, -10, 10, 0">
                             <chartingToolkit:Chart  Name="PieChartYears" Title="Годы издания" FontWeight="ExtraLight"  BorderBrush="Transparent" Background="Transparent">
+
+                                <chartingToolkit:Chart.PlotAreaStyle>
+                                    <Style TargetType="Grid">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style>
+                                </chartingToolkit:Chart.PlotAreaStyle>
+
+                                <chartingToolkit:Chart.LegendStyle>
+                                    <Style TargetType="visualizationToolkit:Legend">
+                                        <Setter Property="Margin" Value="5,5"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="BorderBrush" Value="LightGray"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style>
+                                </chartingToolkit:Chart.LegendStyle>
+
+                                <chartingToolkit:Chart.Style>
+                                    <Style TargetType="chartingToolkit:Chart">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="chartingToolkit:Chart">
+                                                    <Border Background="{TemplateBinding Background}" BorderBrush="LightGray" Margin="10" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto" />
+                                                                <RowDefinition Height="*" />
+                                                            </Grid.RowDefinitions>
+
+                                                            <visualizationToolkit:Title Content="{TemplateBinding Title}" Style="{TemplateBinding TitleStyle}" Margin="0" />
+
+                                                            <!-- Use a nested Grid to avoid possible clipping behavior resulting from ColumnSpan+Width=Auto -->
+                                                            <Grid Grid.Row="1" Margin="0">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                </Grid.ColumnDefinitions>
+
+                                                                <visualizationToolkit:Legend x:Name="Legend" BorderBrush="LightGray" Title="{TemplateBinding LegendTitle}" Style="{TemplateBinding LegendStyle}" Grid.Column="1" />
+                                                                
+                                                                <primitives:EdgePanel x:Name="ChartArea" Style="{TemplateBinding ChartAreaStyle}">
+                                                                    <Grid Canvas.ZIndex="-1" Style="{TemplateBinding PlotAreaStyle}" />
+                                                                    <!--<Border Canvas.ZIndex="10" BorderBrush="#FF919191" BorderThickness="1" />-->
+                                                                </primitives:EdgePanel>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </chartingToolkit:Chart.Style>
+                                
+                                
+                                
                                 <chartingToolkit:PieSeries DependentValuePath="Value" 
             IndependentValuePath="Key" ItemsSource="{Binding}" 
-            IsSelectionEnabled="True" FontWeight="Light"/>
+            IsSelectionEnabled="True" FontWeight="Light">
+
+                                    <ctk:PieSeries.Palette>
+                                        <tk:ResourceDictionaryCollection>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="Crimson"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="MediumTurquoise"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="DodgerBlue"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="DarkOrchid"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="LimeGreen"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="DeepPink"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="Gold"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="DarkOrange"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="Salmon"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="SlateGray"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                        </tk:ResourceDictionaryCollection>
+                                    </ctk:PieSeries.Palette>
+                                    
+                                </chartingToolkit:PieSeries>
+                                
+                                
+
+                                <chartingToolkit:Chart.Resources>
+                                    <Style TargetType="ScrollBar" BasedOn="{StaticResource StandardScrollBar}"/>
+                                </chartingToolkit:Chart.Resources>
                             </chartingToolkit:Chart>
                         </Grid>
 
-                        <Grid Row="0" Column="1" Margin="10, -20">
+                        <Grid Row="0" Column="1" Margin="10, -10, 10, 0">
                             <chartingToolkit:Chart  Name="PieChartGenres" Title="Жанры" FontWeight="ExtraLight"  BorderBrush="Transparent" Background="Transparent">
+                                <chartingToolkit:Chart.PlotAreaStyle>
+                                    <Style TargetType="Grid">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style>
+                                </chartingToolkit:Chart.PlotAreaStyle>
+
+                                <chartingToolkit:Chart.LegendStyle>
+                                    <Style TargetType="visualizationToolkit:Legend">
+                                        <Setter Property="Margin" Value="5,5"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="BorderBrush" Value="LightGray"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style>
+                                </chartingToolkit:Chart.LegendStyle>
+
+                                <chartingToolkit:Chart.Style>
+                                    <Style TargetType="chartingToolkit:Chart">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="chartingToolkit:Chart">
+                                                    <Border Background="{TemplateBinding Background}" BorderBrush="LightGray" Margin="10" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto" />
+                                                                <RowDefinition Height="*" />
+                                                            </Grid.RowDefinitions>
+
+                                                            <visualizationToolkit:Title Content="{TemplateBinding Title}" Style="{TemplateBinding TitleStyle}" Margin="0" />
+
+                                                            <!-- Use a nested Grid to avoid possible clipping behavior resulting from ColumnSpan+Width=Auto -->
+                                                            <Grid Grid.Row="1" Margin="0">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                </Grid.ColumnDefinitions>
+
+                                                                <visualizationToolkit:Legend x:Name="Legend" BorderBrush="LightGray" Title="{TemplateBinding LegendTitle}" Style="{TemplateBinding LegendStyle}" Grid.Column="1" />
+
+                                                                <primitives:EdgePanel x:Name="ChartArea" Style="{TemplateBinding ChartAreaStyle}">
+                                                                    <Grid Canvas.ZIndex="-1" Style="{TemplateBinding PlotAreaStyle}" />
+                                                                    <!--<Border Canvas.ZIndex="10" BorderBrush="#FF919191" BorderThickness="1" />-->
+                                                                </primitives:EdgePanel>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </chartingToolkit:Chart.Style>
                                 <chartingToolkit:PieSeries DependentValuePath="Value" 
             IndependentValuePath="Key" ItemsSource="{Binding}" 
-            IsSelectionEnabled="True" FontWeight="Light"/>
+            IsSelectionEnabled="True" FontWeight="Light">
+
+                                    <ctk:PieSeries.Palette>
+                                        <tk:ResourceDictionaryCollection>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="Crimson"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="MediumTurquoise"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="DodgerBlue"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="DarkOrchid"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="LimeGreen"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="DeepPink"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="Gold"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="DarkOrange"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="Salmon"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary>
+                                                <Style x:Key="DataPointStyle" TargetType="Control">
+                                                    <Setter Property="Background" Value="SlateGray"></Setter>
+                                                </Style>
+                                            </ResourceDictionary>
+                                        </tk:ResourceDictionaryCollection>
+                                    </ctk:PieSeries.Palette>
+
+                                </chartingToolkit:PieSeries>
+                                <chartingToolkit:Chart.Resources>
+                                    <Style TargetType="ScrollBar" BasedOn="{StaticResource StandardScrollBar}"/>
+                                </chartingToolkit:Chart.Resources>
                             </chartingToolkit:Chart>
                             </Grid>
                         
                         <Grid Row="1" Column="0" ColumnSpan="2" Margin="10, -10">
 
                             <chartingToolkit:Chart  Name="LineChart" Title="Книгооборот"  FontWeight="ExtraLight"  BorderBrush="Transparent" Background="Transparent">
+                                <chartingToolkit:Chart.PlotAreaStyle>
+                                    <Style TargetType="Grid">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style>
+                                </chartingToolkit:Chart.PlotAreaStyle>
+
+                                <chartingToolkit:Chart.LegendStyle>
+                                    <Style TargetType="visualizationToolkit:Legend">
+                                        <Setter Property="Margin" Value="5,5"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="BorderBrush" Value="LightGray"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style>
+                                </chartingToolkit:Chart.LegendStyle>
+
+                                <chartingToolkit:Chart.Style>
+                                    <Style TargetType="chartingToolkit:Chart">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="chartingToolkit:Chart">
+                                                    <Border Background="{TemplateBinding Background}" BorderBrush="LightGray" Margin="10" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto" />
+                                                                <RowDefinition Height="*" />
+                                                            </Grid.RowDefinitions>
+
+                                                            <visualizationToolkit:Title Content="{TemplateBinding Title}" Style="{TemplateBinding TitleStyle}" Margin="0" />
+
+                                                            <!-- Use a nested Grid to avoid possible clipping behavior resulting from ColumnSpan+Width=Auto -->
+                                                            <Grid Grid.Row="1" Margin="0">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                </Grid.ColumnDefinitions>
+
+                                                                <visualizationToolkit:Legend x:Name="Legend" BorderBrush="LightGray" Title="{TemplateBinding LegendTitle}" Style="{TemplateBinding LegendStyle}" Grid.Column="1" />
+
+                                                                <primitives:EdgePanel x:Name="ChartArea" Style="{TemplateBinding ChartAreaStyle}">
+                                                                    <Grid Canvas.ZIndex="-1" Style="{TemplateBinding PlotAreaStyle}" />
+                                                                    <!--<Border Canvas.ZIndex="10" BorderBrush="#FF919191" BorderThickness="1" />-->
+                                                                </primitives:EdgePanel>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </chartingToolkit:Chart.Style>
                                 <chartingToolkit:LineSeries Name="Give" Title="Выдачи" DependentValuePath="Value" 
             IndependentValuePath="Key" ItemsSource="{Binding [0]}" 
-            IsSelectionEnabled="True"/>
+            IsSelectionEnabled="True">
+                                    <chartingToolkit:LineSeries.DataPointStyle>
+                                        <Style TargetType="chartingToolkit:LineDataPoint">
+                                            <Setter Property="Background" Value="Crimson"></Setter>
+                                        </Style>
+                                    </chartingToolkit:LineSeries.DataPointStyle>
+                                    </chartingToolkit:LineSeries>
                                 <chartingToolkit:LineSeries Name="Back" Title="Приёмы" DependentValuePath="Value" 
             IndependentValuePath="Key" ItemsSource="{Binding [1]}" 
-            IsSelectionEnabled="True"/>
+            IsSelectionEnabled="True">
+
+                                    <chartingToolkit:LineSeries.DataPointStyle>
+                                        <Style TargetType="chartingToolkit:LineDataPoint">
+                                            <Setter Property="Background" Value="DodgerBlue"></Setter>
+                                        </Style>
+                                    </chartingToolkit:LineSeries.DataPointStyle>
+                                </chartingToolkit:LineSeries>
                             </chartingToolkit:Chart>
                         </Grid>
                     </Grid>

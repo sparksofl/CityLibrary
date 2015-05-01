@@ -6,15 +6,19 @@
 
     <!--Foreground-->
     <SolidColorBrush x:Key="Foreground" Color="#000000"/>
+    <SolidColorBrush x:Key="Foreground2" Color="DarkGray"/>
     <SolidColorBrush x:Key="ComboBoxForeground" Color="#FFFFFF"/>
 
     <!--General-->
-    <SolidColorBrush x:Key="BackgroundHighlighted" Color="#BFCED9"/>
-    <SolidColorBrush x:Key="BorderBrushHighlighted" Color="#BFCED9"/>
+    <SolidColorBrush x:Key="BackgroundHighlighted" Color="#EBEBEB"/>
+    <SolidColorBrush x:Key="BorderBrushHighlighted" Color="LightGray"/>
     <SolidColorBrush x:Key="BackgroundSelected" Color="#2F99E0"/>
     <SolidColorBrush x:Key="BorderBrushSelected" Color="#32A2ED"/>
     <SolidColorBrush x:Key="BackgroundNormal" Color="#3F3F46"/>
     <SolidColorBrush x:Key="BorderBrushNormal" Color="#54545C"/>
+
+    <SolidColorBrush x:Key="BackgroundNormal2" Color="#EBEBEB"/>
+    <SolidColorBrush x:Key="BorderBrushNormal2" Color="LightGray"/>
 
     <!--Text Box-->
     <SolidColorBrush x:Key="TextBoxBackground" Color="#333337"/>

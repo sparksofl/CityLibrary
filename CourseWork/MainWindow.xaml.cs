@@ -19,6 +19,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using CourseWork.Styles.CustomizedWindow;
+using Mindscape.WpfElements.Charting;
 using CheckBox = System.Windows.Controls.CheckBox;
 using DataGrid = System.Windows.Controls.DataGrid;
 using DataGridCell = System.Windows.Controls.DataGridCell;
@@ -63,9 +64,9 @@ namespace CourseWork
         public static List<string> ClientsList = Command.ReadData("SELECT Name FROM Clients;", new List<string>() {"Name"});
 
         public static List<string> ComboBoxList = new List<string>();
-        public static List<string> LastGivenBooks = Command.ReadDataToItemsList("SELECT TOP 5 BName, GiveDate, Name FROM Books B, Checkout C, Clients Cl WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NULL ORDER BY GiveDate DESC", new List<string>() { "BName", "GiveDate", "Name" });
-        public List<string> LastBackBooks = Command.ReadDataToItemsList("SELECT TOP 5 BName, BackDate, Name FROM Books B, Checkout C, Clients CL WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NOT NULL ORDER BY BackDate DESC", new List<string>() { "BName", "BackDate", "Name" });
-        public List<string> OverdueBooks = Command.ReadDataToItemsList("SELECT TOP 5 BName, Term, Name FROM Overdue O, Clients C WHERE o.CardNumber=C.CardNumber ORDER BY Term DESC", new List<string>() { "BName", "Term", "Name" });
+        public static List<string> LastGivenBooks;// = Command.ReadDataToItemsList("SELECT TOP 10 BName, GiveDate, Name FROM Books B, Checkout C, Clients Cl WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NULL ORDER BY GiveDate DESC", new List<string>() { "BName", "GiveDate", "Name" });
+        public List<string> LastBackBooks;// = Command.ReadDataToItemsList("SELECT TOP 10 BName, BackDate, Name FROM Books B, Checkout C, Clients CL WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NOT NULL ORDER BY BackDate DESC", new List<string>() { "BName", "BackDate", "Name" });
+        public List<string> OverdueBooks;// = Command.ReadDataToItemsList("SELECT TOP 10 BName, Term, Name FROM Overdue O, Clients C WHERE o.CardNumber=C.CardNumber ORDER BY Term DESC", new List<string>() { "BName", "Term", "Name" });
         public static List<string> BName = new List<string>();
         public  static  List<string> ComboBoxFiltersList = new List<string>(); 
         public  static  List<string> AuthorsFiltersList = new List<string>(); 
@@ -83,9 +84,16 @@ namespace CourseWork
             //Command.ReadDataToPair("SELECT CONVERT(VARCHAR(10), BackDate, 101), COUNT(*) FROM Checkout WHERE BackDate IS NOT NULL GROUP BY CONVERT(VARCHAR(10), BackDate, 101)");
         public List<List<KeyValuePair<string, int>>> Checkout = new List<List<KeyValuePair<string, int>>>();
 
+
+        // interface features
+        public static readonly DependencyProperty TheCollectionProperty =
+            DependencyProperty.Register("TheCollection", typeof(List<Point>), typeof(Chart));
+
+
         public MainWindow()
         {
             InitializeComponent();
+            InitLocal();
             SetSources();
         }
 
@@ -95,6 +103,7 @@ namespace CourseWork
             //Command.ExecuteCommand(
             //    "CREATE VIEW Overdue AS SELECT B.Code, BName, ChID, DATEADD(month,1,GiveDate) AS 'Term', C.CardNumber FROM Books B, Checkout C WHERE B.Code=C.Code AND BackDate IS NULL GROUP BY GiveDate, BName, B.Code, ChID HAVING (CAST(DATEADD(month,1,GiveDate) AS DATETIME)) < GETDATE();");
             //Command.ExecuteCommand("DROP VIEW Overdue;");ComboBoxList.AddRange(Tables.Keys);
+            UpdateLists();
             ComboBoxList.AddRange(Tables.Keys);
             ComboBoxTables.ItemsSource = ComboBoxList;
             ComboBoxTables.SelectedIndex = 1;
@@ -119,6 +128,23 @@ namespace CourseWork
             //UpdateLists();
 
             ShowChart();
+        }
+
+        public List<Point> TheCollection
+        {
+            get { return (List<Point>)GetValue(TheCollectionProperty); }
+            set { SetValue(TheCollectionProperty, value); }
+        }
+        private void InitLocal()
+        {
+            TheCollection = new List<Point>();
+            for (int i = 0; i < 100; i++)
+            {
+                var pt = new Point();
+                pt.X = i * 3;
+                pt.Y = i * 2;
+                TheCollection.Add(pt);
+            }
         }
 
         private void FillStartGrids()
@@ -249,6 +275,7 @@ namespace CourseWork
                         break;
                 }
                 currentItem.IsSelected = true;
+                if (menuItem.Name == "Exit") return;
                 CurrentMenu.Text = currentItem.Header.ToString();
             }
             catch (Exception exception)
@@ -286,31 +313,33 @@ namespace CourseWork
             //DATENAME(weekday, BackDate)
             List<string> gDates = Gives.Select(pair => pair.Key).ToList();
             List<string> bDates = Backs.Select(pair => pair.Key).ToList();
-            List<string> Dates = new List<string>();
-            Dates.AddRange(gDates);
-            Dates.AddRange(bDates);
-            Dates = Dates.Distinct().ToList();
-            Dates.Sort();
+            List<string> dates = new List<string>();
+            dates.AddRange(gDates);
+            dates.AddRange(bDates);
+            dates = dates.Distinct().ToList();
+            dates.Sort();
 
             // отладить и посмотреть индексы элементов для вставки
             int h = 0;
-            foreach (var item in Dates)
+            foreach (var item in dates)
             {
                 if (!gDates.Contains(item))
                 {
                     Gives.Add(new KeyValuePair<string, int>(item, 0));
                     Gives.Insert(h, new KeyValuePair<string, int>(item, 0));
+                    Gives.RemoveAt(Gives.Count - 1);
                 }
                 h++;
             }
 
             h = 0;
-            foreach (var item in Dates)
+            foreach (var item in dates)
             {
                 if (!bDates.Contains(item))
                 {
                     Backs.Add(new KeyValuePair<string, int>(item, 0));
                     Backs.Insert(h, new KeyValuePair<string, int>(item, 0));
+                    Backs.RemoveAt(Backs.Count - 1);
                 }
                 h++;
                 //Backs.Add(new KeyValuePair<string, int>(Dates[i], 0));
@@ -923,13 +952,13 @@ namespace CourseWork
 
         private void UpdateLists()
         {
-            LastGivenBooks = LastGivenBooks = Command.ReadDataToItemsList("SELECT TOP 5 BName, GiveDate, Name FROM Books B, Checkout C, Clients Cl WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NULL ORDER BY GiveDate DESC", new List<string>() { "BName", "GiveDate", "Name" });
+            LastGivenBooks = LastGivenBooks = Command.ReadDataToItemsList("SELECT TOP 10 BName, GiveDate, Name FROM Books B, Checkout C, Clients Cl WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NULL ORDER BY GiveDate DESC", new List<string>() { "BName", "GiveDate", "Name" });
             ListBoxLastGiven.ItemsSource = LastGivenBooks;
 
-            LastBackBooks = LastGivenBooks = Command.ReadDataToItemsList("SELECT TOP 5 BName, BackDate, Name FROM Books B, Checkout C, Clients CL WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NOT NULL ORDER BY BackDate DESC", new List<string>() { "BName", "BackDate", "Name" });
+            LastBackBooks = LastGivenBooks = Command.ReadDataToItemsList("SELECT TOP 10 BName, BackDate, Name FROM Books B, Checkout C, Clients CL WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NOT NULL ORDER BY BackDate DESC", new List<string>() { "BName", "BackDate", "Name" });
             ListBoxLastBack.ItemsSource = LastBackBooks;
 
-            OverdueBooks = LastGivenBooks = Command.ReadDataToItemsList("SELECT TOP 5 BName, Term, Name FROM Overdue O, Clients C WHERE o.CardNumber=C.CardNumber ORDER BY Term DESC", new List<string>() { "BName", "Term", "Name" });
+            OverdueBooks = LastGivenBooks = Command.ReadDataToItemsList("SELECT TOP 10 BName, Term, Name FROM Overdue O, Clients C WHERE o.CardNumber=C.CardNumber ORDER BY Term DESC", new List<string>() { "BName", "Term", "Name" });
 
             ListBoxOverdue.ItemsSource = OverdueBooks;
 

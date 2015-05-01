@@ -50,3 +50,5 @@ D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\wpft
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\Mindscape.WpfElements.dll
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\Mindscape.WpfElements.xml
 D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\CourseWork.csprojResolveAssemblyReference.cache
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\bin\Debug\CityLibrary.mdf
+D:\MyFolder\&Studies\OOP\C#\WPFApplications\CourseWork\CourseWork\obj\Debug\CourseWork_Content.g.cs
