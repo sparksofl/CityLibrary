@@ -59,6 +59,18 @@ namespace CourseWork
             { "Publishers", "PName"}
         };
 
+        static Dictionary<int, string> DaysOfWeek = new Dictionary<int, string>()
+        {
+            { 1, "Понедельник"},
+            { 2, "Вторник"},
+            { 3, "Среда"},
+            { 4, "Четрверг"},
+            { 5, "Пятница"},
+            { 6, "Суббота"},
+            { 7, "Воскресенье"}
+            
+        };  
+
         public  static  List<string> ComboBoxEntity = new List<string>(){"Книги", "Произведения"};
         public static List<string> ComboBoxParameter = new List<string>() { "Название", "Автор" };
         public static List<string> ClientsList = Command.ReadData("SELECT Name FROM Clients;", new List<string>() {"Name"});
@@ -127,7 +139,7 @@ namespace CourseWork
             FillStartGrids();
             //UpdateLists();
 
-            ShowChart();
+            ShowChart("DatesView");
         }
 
         public List<Point> TheCollection
@@ -264,7 +276,7 @@ namespace CourseWork
                         currentItem = TQuery;
                         break;
                     case ("MStatistic"):
-                        ShowChart();
+                        ShowChart("DatesView");
                         currentItem = TStatistic;
                         break;
                     case ("MReports"):
@@ -284,7 +296,7 @@ namespace CourseWork
             }
         }
 
-        private void ShowChart()
+        private void ShowChart(string view)
         {
             /*CREATE VIEW Backs AS SELECT 'backdate' = 
             CASE 
@@ -304,12 +316,29 @@ namespace CourseWork
             Backs = new List<KeyValuePair<string, int>>();
             Years = new List<KeyValuePair<string, int>>();
             Genres = new List<KeyValuePair<string, int>>();
-            Checkout = new List<List<KeyValuePair<string, int>>>(); 
+            Checkout = new List<List<KeyValuePair<string, int>>>();
 
             Years = Command.ReadDataToPair("SELECT Year, COUNT(Year) FROM Books GROUP BY Year");
-            Genres = Command.ReadDataToPair("SELECT Genre, COUNT(Genre) FROM Opuses WHERE Genre IS NOT NULL GROUP BY Genre");
-            Gives = Command.ReadDataToPair("SELECT CONVERT(VARCHAR(10), GiveDate, 101), COUNT(*) FROM Checkout GROUP BY CONVERT(VARCHAR(10), GiveDate, 101)");
-            Backs = Command.ReadDataToPair("SELECT CONVERT(VARCHAR(10), BackDate, 101), COUNT(*) FROM Checkout WHERE BackDate IS NOT NULL GROUP BY CONVERT(VARCHAR(10), BackDate, 101)");
+            Genres =
+                Command.ReadDataToPair("SELECT Genre, COUNT(Genre) FROM Opuses WHERE Genre IS NOT NULL GROUP BY Genre");
+            if (view == "WeekView")
+            {
+                Gives =
+                    Command.ReadDataToPair(
+                        "SELECT DATEPART(weekday, GiveDate), COUNT(*) FROM Checkout GROUP BY DATEPART(weekday, GiveDate) ORDER BY DATEPART(weekday, GiveDate)");
+                Backs =
+                    Command.ReadDataToPair(
+                        "SELECT DATEPART(weekday, BackDate), COUNT(*) FROM Checkout WHERE BackDate IS NOT NULL GROUP BY DATEPART(weekday, BackDate) ORDER BY DATEPART(weekday, BackDate)");
+            }
+            else if (view == "DatesView")
+            {
+                Gives =
+                    Command.ReadDataToPair(
+                        "SELECT CONVERT(VARCHAR(10), GiveDate, 101), COUNT(*) FROM Checkout GROUP BY CONVERT(VARCHAR(10), GiveDate, 101)");
+                Backs =
+                    Command.ReadDataToPair(
+                        "SELECT CONVERT(VARCHAR(10), BackDate, 101), COUNT(*) FROM Checkout WHERE BackDate IS NOT NULL GROUP BY CONVERT(VARCHAR(10), BackDate, 101)");
+            }
             //DATENAME(weekday, BackDate)
             List<string> gDates = Gives.Select(pair => pair.Key).ToList();
             List<string> bDates = Backs.Select(pair => pair.Key).ToList();
@@ -317,7 +346,8 @@ namespace CourseWork
             dates.AddRange(gDates);
             dates.AddRange(bDates);
             dates = dates.Distinct().ToList();
-            dates.Sort();
+            if (view == "DatesView")
+                dates.Sort();
 
             // отладить и посмотреть индексы элементов для вставки
             int h = 0;
@@ -342,12 +372,36 @@ namespace CourseWork
                     Backs.RemoveAt(Backs.Count - 1);
                 }
                 h++;
-                //Backs.Add(new KeyValuePair<string, int>(Dates[i], 0));
             }
 
-            //Gives.Sort((x, y) => x.Value.CompareTo(y.Value));
-            //Backs.Sort((x, y) => x.Value.CompareTo(y.Value));
 
+            if (view == "WeekView")
+            {
+                for (int i = 0; i < Gives.Count;)
+                {
+                    var pair = Gives[i];
+                    int j = 0;
+                    if (int.TryParse(pair.Key, out j))
+                    {
+                        Gives.Add(new KeyValuePair<string, int>(DaysOfWeek[j], pair.Value));
+                        Gives.Remove(new KeyValuePair<string, int>(pair.Key, pair.Value));
+                    }
+                    else
+                        i++;
+                } 
+                for (int i = 0; i < Backs.Count;)
+                {
+                    var pair = Backs[i];
+                    int j = 0;
+                    if (int.TryParse(pair.Key, out j))
+                    {
+                        Backs.Add(new KeyValuePair<string, int>(DaysOfWeek[j], pair.Value));
+                        Backs.Remove(new KeyValuePair<string, int>(pair.Key, pair.Value));
+                    }
+                    else
+                        i++;
+                }
+            }
             Checkout.Add(Gives);
             Checkout.Add(Backs);
 
@@ -667,7 +721,6 @@ namespace CourseWork
             UpdateFilters(tableName);
             UpdateLists();
             FillStartGrids();
-            ShowChart();
         }
 
         private void UpdateClients()
@@ -925,7 +978,6 @@ namespace CourseWork
             }
             UpdateLists();
             FillStartGrids();
-            ShowChart();
 
             var result = MessageBox.Show("Создать отчёт о выданной книге?", "Создание отчёта", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
@@ -1125,6 +1177,16 @@ namespace CourseWork
             {
                 System.Windows.MessageBox.Show(ex.Message);
             }
+        }
+
+        private void WeekView_OnClick(object sender, RoutedEventArgs e)
+        {
+            ShowChart("WeekView");
+        }
+
+        private void DatesView_OnClick(object sender, RoutedEventArgs e)
+        {
+            ShowChart("DatesView");
         }
     }
 }

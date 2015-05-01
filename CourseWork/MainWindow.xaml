@@ -939,6 +939,12 @@
                         <Grid Row="1" Column="0" ColumnSpan="2" Margin="10, -10">
 
                             <chartingToolkit:Chart  Name="LineChart" Title="Книгооборот"  FontWeight="ExtraLight"  BorderBrush="Transparent" Background="Transparent">
+                                <chartingToolkit:Chart.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Name ="WeekView" Header="По дням недели" Click="WeekView_OnClick"/>
+                                        <MenuItem Name ="DatesView" Header="По датам" Click="DatesView_OnClick"/>
+                                    </ContextMenu>
+                                </chartingToolkit:Chart.ContextMenu>
                                 <chartingToolkit:Chart.PlotAreaStyle>
                                     <Style TargetType="Grid">
                                         <Setter Property="Background" Value="Transparent"/>
@@ -955,6 +961,7 @@
                                 </chartingToolkit:Chart.LegendStyle>
 
                                 <chartingToolkit:Chart.Style>
+                                    
                                     <Style TargetType="chartingToolkit:Chart">
                                         <Setter Property="Template">
                                             <Setter.Value>
