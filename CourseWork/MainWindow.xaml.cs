@@ -76,9 +76,9 @@ namespace CourseWork
         public static List<string> ClientsList = Command.ReadData("SELECT Name FROM Clients;", new List<string>() {"Name"});
 
         public static List<string> ComboBoxList = new List<string>();
-        public static List<string> LastGivenBooks;// = Command.ReadDataToItemsList("SELECT TOP 10 BName, GiveDate, Name FROM Books B, Checkout C, Clients Cl WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NULL ORDER BY GiveDate DESC", new List<string>() { "BName", "GiveDate", "Name" });
-        public List<string> LastBackBooks;// = Command.ReadDataToItemsList("SELECT TOP 10 BName, BackDate, Name FROM Books B, Checkout C, Clients CL WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NOT NULL ORDER BY BackDate DESC", new List<string>() { "BName", "BackDate", "Name" });
-        public List<string> OverdueBooks;// = Command.ReadDataToItemsList("SELECT TOP 10 BName, Term, Name FROM Overdue O, Clients C WHERE o.CardNumber=C.CardNumber ORDER BY Term DESC", new List<string>() { "BName", "Term", "Name" });
+        public static List<string> LastGivenBooks = Command.ReadDataToItemsList("SELECT TOP 10 BName, GiveDate, Name FROM Books B, Checkout C, Clients Cl WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NULL ORDER BY GiveDate DESC", new List<string>() { "BName", "GiveDate", "Name" });
+        public List<string> LastBackBooks = Command.ReadDataToItemsList("SELECT TOP 10 BName, BackDate, Name FROM Books B, Checkout C, Clients CL WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NOT NULL ORDER BY BackDate DESC", new List<string>() { "BName", "BackDate", "Name" });
+        public List<string> OverdueBooks = Command.ReadDataToItemsList("SELECT TOP 10 BName, Term, Name FROM Overdue O, Clients C WHERE o.CardNumber=C.CardNumber ORDER BY Term DESC", new List<string>() { "BName", "Term", "Name" });
         public static List<string> BName = new List<string>();
         public  static  List<string> ComboBoxFiltersList = new List<string>(); 
         public  static  List<string> AuthorsFiltersList = new List<string>(); 
@@ -1004,13 +1004,13 @@ namespace CourseWork
 
         private void UpdateLists()
         {
-            LastGivenBooks = LastGivenBooks = Command.ReadDataToItemsList("SELECT TOP 10 BName, GiveDate, Name FROM Books B, Checkout C, Clients Cl WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NULL ORDER BY GiveDate DESC", new List<string>() { "BName", "GiveDate", "Name" });
+            LastGivenBooks = Command.ReadDataToItemsList("SELECT TOP 10 BName, GiveDate, Name FROM Books B, Checkout C, Clients Cl WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NULL ORDER BY GiveDate DESC", new List<string>() { "BName", "GiveDate", "Name" });
             ListBoxLastGiven.ItemsSource = LastGivenBooks;
 
-            LastBackBooks = LastGivenBooks = Command.ReadDataToItemsList("SELECT TOP 10 BName, BackDate, Name FROM Books B, Checkout C, Clients CL WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NOT NULL ORDER BY BackDate DESC", new List<string>() { "BName", "BackDate", "Name" });
+            LastBackBooks = Command.ReadDataToItemsList("SELECT TOP 10 BName, BackDate, Name FROM Books B, Checkout C, Clients CL WHERE B.Code=C.Code AND Cl.CardNumber=C.CardNumber AND BackDate IS NOT NULL ORDER BY BackDate DESC", new List<string>() { "BName", "BackDate", "Name" });
             ListBoxLastBack.ItemsSource = LastBackBooks;
 
-            OverdueBooks = LastGivenBooks = Command.ReadDataToItemsList("SELECT TOP 10 BName, Term, Name FROM Overdue O, Clients C WHERE o.CardNumber=C.CardNumber ORDER BY Term DESC", new List<string>() { "BName", "Term", "Name" });
+            OverdueBooks = Command.ReadDataToItemsList("SELECT TOP 10 BName, Term, Name FROM Overdue O, Clients C WHERE o.CardNumber=C.CardNumber ORDER BY Term DESC", new List<string>() { "BName", "Term", "Name" });
 
             ListBoxOverdue.ItemsSource = OverdueBooks;
 
